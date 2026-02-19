@@ -68,7 +68,7 @@
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"from\": \"Join Team <onboarding@resend.dev>\",\n  \"to\": [\"{{ $json.creatorEmail }}\"],\n  \"subject\": {{ JSON.stringify($json.emailSubject) }},\n  \"html\": {{ JSON.stringify($json.emailHtml) }},\n  \"text\": {{ JSON.stringify($json.emailText) }}\n}"
+        "jsonBody": "={\n  \"from\": \"Join Team <noreply@daretogether.net>\",\n  \"to\": [\"{{ $json.creatorEmail }}\"],\n  \"subject\": {{ JSON.stringify($json.emailSubject) }},\n  \"html\": {{ JSON.stringify($json.emailHtml) }},\n  \"text\": {{ JSON.stringify($json.emailText) }}\n}"
       },
       "id": "send-completion-email",
       "name": "Send Completion Email",
@@ -93,7 +93,7 @@
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"from\": \"Join Team <onboarding@resend.dev>\",\n  \"to\": [\"{{ $json.creatorEmail }}\"],\n  \"subject\": {{ JSON.stringify($json.emailSubject) }},\n  \"html\": {{ JSON.stringify($json.emailHtml) }},\n  \"text\": {{ JSON.stringify($json.emailText) }}\n}"
+        "jsonBody": "={\n  \"from\": \"Join Team <noreply@daretogether.net>\",\n  \"to\": [\"{{ $json.creatorEmail }}\"],\n  \"subject\": {{ JSON.stringify($json.emailSubject) }},\n  \"html\": {{ JSON.stringify($json.emailHtml) }},\n  \"text\": {{ JSON.stringify($json.emailText) }}\n}"
       },
       "id": "send-status-update-email",
       "name": "Send Status Update Email",

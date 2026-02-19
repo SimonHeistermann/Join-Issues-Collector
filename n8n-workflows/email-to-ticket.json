@@ -159,7 +159,7 @@
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"from\": \"Join Team <onboarding@resend.dev>\",\n  \"to\": [\"{{ $('Prepare Task Data').first().json.senderEmail }}\"],\n  \"subject\": \"Request Received: {{ $('Prepare Task Data').first().json.newTask.name }}\",\n  \"html\": {{ JSON.stringify($('Prepare Task Data').first().json.confirmationHtml) }},\n  \"text\": {{ JSON.stringify($('Prepare Task Data').first().json.confirmationText) }}\n}"
+        "jsonBody": "={\n  \"from\": \"Join Team <noreply@daretogether.net>\",\n  \"to\": [\"{{ $('Prepare Task Data').first().json.senderEmail }}\"],\n  \"subject\": \"Request Received: {{ $('Prepare Task Data').first().json.newTask.name }}\",\n  \"html\": {{ JSON.stringify($('Prepare Task Data').first().json.confirmationHtml) }},\n  \"text\": {{ JSON.stringify($('Prepare Task Data').first().json.confirmationText) }}\n}"
       },
       "id": "send-confirmation",
       "name": "Send Confirmation Email",
@@ -184,7 +184,7 @@
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"from\": \"Join Team <onboarding@resend.dev>\",\n  \"to\": [\"{{ $('Sanitize Email Data').first().json.senderEmail }}\"],\n  \"subject\": \"Daily Request Limit Reached - Join\",\n  \"text\": \"Hello {{ $('Sanitize Email Data').first().json.senderName }},\\n\\nThank you for your request. Unfortunately, the daily limit of 10 automated ticket creations has been reached.\\n\\nYour email has NOT been processed automatically. However, our team has received your request and will manually review it.\\n\\nPlease try again tomorrow or contact a team member directly for urgent matters.\\n\\nThank you for your understanding,\\nJoin Team\"\n}"
+        "jsonBody": "={\n  \"from\": \"Join Team <noreply@daretogether.net>\",\n  \"to\": [\"{{ $('Sanitize Email Data').first().json.senderEmail }}\"],\n  \"subject\": \"Daily Request Limit Reached - Join\",\n  \"text\": \"Hello {{ $('Sanitize Email Data').first().json.senderName }},\\n\\nThank you for your request. Unfortunately, the daily limit of 10 automated ticket creations has been reached.\\n\\nYour email has NOT been processed automatically. However, our team has received your request and will manually review it.\\n\\nPlease try again tomorrow or contact a team member directly for urgent matters.\\n\\nThank you for your understanding,\\nJoin Team\"\n}"
       },
       "id": "send-limit-reached",
       "name": "Send Limit Reached Email",
