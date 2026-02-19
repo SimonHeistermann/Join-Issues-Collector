@@ -25,7 +25,13 @@ export class NotificationService {
       taskDescription: task.description,
       previousStatus,
       newStatus: task.status,
+      prio: task.prio,
+      due_date: task.due_date,
+      category: task.category,
+      subtasks: task.subtasks,
+      assigned_to: task.assigned_to,
       creator: task.creator,
+      ai_generated: task.ai_generated,
       timestamp: new Date().toISOString()
     };
 

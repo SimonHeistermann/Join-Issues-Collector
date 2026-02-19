@@ -4,6 +4,7 @@ import { FirebaseService } from './firebase.service';
 import { NotificationService } from './notification.service';
 import {
   Task,
+  SubTask,
   TaskStatus,
   Creator,
   generateTaskId,
@@ -29,10 +30,35 @@ export class TaskService {
     return this.firebase.loadData<Record<string, Task>>('tasks').pipe(
       map(data => {
         if (!data) return [];
-        return Object.values(data).filter(task => task !== null && task !== undefined);
+        return Object.values(data)
+          .filter(task => task !== null && task !== undefined)
+          .map(task => this.normalizeTask(task));
       }),
       tap(tasks => this.tasksSubject.next(tasks))
     );
+  }
+
+  /**
+   * Normalize task data from Firebase
+   * Firebase may return arrays as objects with numeric keys
+   */
+  private normalizeTask(task: Task): Task {
+    let { subtasks, assigned_to } = task;
+    let changed = false;
+
+    if (subtasks && typeof subtasks === 'object' && !Array.isArray(subtasks)) {
+      subtasks = Object.values(subtasks) as SubTask[];
+      changed = true;
+    }
+
+    if (Array.isArray(assigned_to)) {
+      const obj: Record<string, string> = {};
+      (assigned_to as string[]).forEach((name, i) => { obj[String(i)] = name; });
+      assigned_to = obj;
+      changed = true;
+    }
+
+    return changed ? { ...task, subtasks, assigned_to } : task;
   }
 
   /**

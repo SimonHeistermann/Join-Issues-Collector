@@ -51,7 +51,7 @@ export class LimitReachedComponent implements OnInit, OnDestroy {
     const email = 'requests@join-issue-collector.projects.simon-heistermann.de';
     const subject = encodeURIComponent('Request: ');
     const body = encodeURIComponent(
-      `Type: (feature request / bug report)\n\nDescription:\n\n\nPriority: (low / medium / urgent)\n\nDeadline: (YYYY-MM-DD or leave empty)\n\nNote: Daily AI limit reached - this request will be manually reviewed.`
+      `Type: (feature request / bug report)\n\nDescription:\n\n\nPriority: (low / medium / high / urgent)\n\nDeadline: (YYYY-MM-DD or leave empty)\n\nSubtasks:\n- \n- \n\nNote: Daily AI limit reached - this request will be manually reviewed.`
     );
     window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
   }
