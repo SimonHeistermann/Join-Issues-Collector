@@ -1,0 +1,159 @@
+// ===========================================
+// COLOR PALETTE
+// ===========================================
+
+// Primary Colors
+$color-primary: #2A3647;
+$color-primary-light: #29ABE2;
+$color-primary-dark: #091931;
+$color-primary-hover: #2A3D59;
+
+// Background Colors
+$color-background: #F6F7F8;
+$color-background-light: #E2E6EC;
+$color-background-card: #FFFFFF;
+$color-background-empty: #E7E7E7;
+$color-background-progress: #F4F4F4;
+
+// Text Colors
+$color-text-primary: #2A3647;
+$color-text-secondary: #42526E;
+$color-text-muted: #A8A8A8;
+$color-text-placeholder: #D1D1D1;
+$color-text-white: #FFFFFF;
+$color-text-submenu: #CDCDCD;
+
+// Border Colors
+$color-border: #D1D1D1;
+$color-border-focus: #29ABE2;
+$color-border-empty: #A8A8A8;
+
+// Status Colors
+$color-error: #FF001F;
+$color-error-light: #FF8190;
+$color-success: #7AE229;
+$color-progress: #4589FF;
+
+// Priority Colors
+$color-urgent: #FF3D00;
+$color-medium: #FFA800;
+$color-low: #7AE229;
+
+// Category Colors
+$color-user-story: #0038FF;
+$color-technical-task: #1FD7C1;
+
+// Creator Badge Colors
+$color-creator-member: #92FFBC;
+$color-creator-extern: #EBFC88;
+
+// Badge/Avatar Colors (15 predefined)
+$badge-colors: (
+  1: #FF7A00,
+  2: #FF5EB3,
+  3: #6E52FF,
+  4: #9327FF,
+  5: #00BEE8,
+  6: #1FD7C1,
+  7: #FF745E,
+  8: #FFA35E,
+  9: #FC71FF,
+  10: #FFC701,
+  11: #0038FF,
+  12: #C3FF2B,
+  13: #FFE62B,
+  14: #FF4646,
+  15: #FFBB2B
+);
+
+// Shadow Colors
+$shadow-light: rgba(0, 0, 0, 0.04);
+$shadow-medium: rgba(0, 0, 0, 0.1);
+$shadow-dark: rgba(0, 0, 0, 0.25);
+$shadow-overlay: rgba(0, 0, 0, 0.25);
+
+// ===========================================
+// TYPOGRAPHY
+// ===========================================
+
+$font-family: 'Inter', sans-serif;
+
+// Font Sizes
+$font-size-xs: 12px;
+$font-size-sm: 13px;
+$font-size-base: 16px;
+$font-size-md: 20px;
+$font-size-lg: 21px;
+$font-size-xl: 27px;
+$font-size-xxl: 61px;
+
+// Font Weights
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+// ===========================================
+// SPACING
+// ===========================================
+
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+$spacing-xxl: 48px;
+$spacing-xxxl: 64px;
+
+// ===========================================
+// BORDERS & RADIUS
+// ===========================================
+
+$border-radius-sm: 8px;
+$border-radius-md: 10px;
+$border-radius-lg: 24px;
+$border-radius-xl: 30px;
+$border-radius-round: 50%;
+
+$border-width: 1px;
+$border-width-thick: 2px;
+$border-width-separator: 3px;
+
+// ===========================================
+// LAYOUT
+// ===========================================
+
+$sidebar-width: clamp(172px, 17vw, 232px);
+$header-height: 96px;
+$header-height-mobile: 80px;
+$max-width: 1920px;
+
+// ===========================================
+// BREAKPOINTS
+// ===========================================
+
+$breakpoint-mobile: 768px;
+$breakpoint-tablet: 1024px;
+$breakpoint-desktop: 1280px;
+
+// ===========================================
+// TRANSITIONS
+// ===========================================
+
+$transition-fast: 75ms ease-in;
+$transition-normal: 125ms ease-in;
+$transition-slow: 300ms ease-in-out;
+$transition-animation: 1s cubic-bezier(0.4, 0, 0.2, 1);
+$transition-smooth: 1.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+
+// ===========================================
+// Z-INDEX LAYERS
+// ===========================================
+
+$z-index-dropdown: 100;
+$z-index-sticky: 500;
+$z-index-header: 1000;
+$z-index-sidebar: 1100;
+$z-index-overlay: 2000;
+$z-index-modal: 3000;
+$z-index-tooltip: 4000;

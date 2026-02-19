@@ -1,0 +1,326 @@
+{
+  "name": "Join Email-to-Ticket Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "mailbox": "INBOX",
+        "postProcessAction": "read",
+        "options": {}
+      },
+      "id": "imap-trigger",
+      "name": "Email Trigger",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "credentials": {
+        "imap": {
+          "id": "YOUR_IMAP_CREDENTIAL_ID",
+          "name": "Gmail IMAP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://backendjoin-67278-default-rtdb.europe-west1.firebasedatabase.app/rate_limits/{{ $now.format('yyyy-MM-dd') }}.json"
+      },
+      "id": "check-rate-limit",
+      "name": "Check Rate Limit",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [450, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.count || 0 }}",
+              "operation": "smaller",
+              "value2": 10
+            }
+          ]
+        }
+      },
+      "id": "rate-limit-check",
+      "name": "Rate Limit Check",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const emailData = $('Email Trigger').first().json;\n\nfunction stripHtml(str) {\n  return str.replace(/<script[\\s\\S]*?<\\/script>/gi, '')\n    .replace(/<style[\\s\\S]*?<\\/style>/gi, '')\n    .replace(/<[^>]*>/g, '');\n}\n\nfunction removeInjectionPatterns(str) {\n  return str\n    .replace(/\\{\\{[^}]*\\}\\}/g, '[removed]')\n    .replace(/\\$\\([^)]*\\)/g, '[removed]')\n    .replace(/(javascript|onerror|onload|onclick|eval|alert)\\s*[:=(]/gi, '[removed]')\n    .replace(/<\\?xml[^?]*\\?>/gi, '')\n    .replace(/<!\\[CDATA\\[[\\s\\S]*?\\]\\]>/gi, '');\n}\n\nfunction truncate(str, max) {\n  return str.length > max ? str.substring(0, max) + '...[truncated]' : str;\n}\n\nconst fromRaw = (emailData.from || '').toString();\nlet senderName = '';\nlet senderEmail = '';\nconst fromMatch = fromRaw.match(/^(.+?)\\s*<(.+?)>$/);\nif (fromMatch) {\n  senderName = fromMatch[1].replace(/\"/g, '').trim();\n  senderEmail = fromMatch[2].trim();\n} else {\n  senderEmail = fromRaw.trim();\n  senderName = fromRaw.trim();\n}\n\nlet subject = (emailData.subject || '').toString();\nlet body = (emailData.text || '').toString();\n\nsubject = stripHtml(subject);\nsubject = removeInjectionPatterns(subject);\nsubject = subject.replace(/\\s+/g, ' ').trim();\nsubject = truncate(subject, 200);\n\nbody = stripHtml(body);\nbody = removeInjectionPatterns(body);\nbody = body.replace(/\\n{3,}/g, '\\n\\n').trim();\nbody = truncate(body, 5000);\n\n// Validate: Is this a legitimate stakeholder request?\nconst emailLower = senderEmail.toLowerCase();\nconst emailDomain = emailLower.split('@').pop() || '';\nconst systemDomains = ['google.com', 'youtube.com', 'facebook.com', 'twitter.com', 'linkedin.com', 'microsoft.com', 'apple.com', 'amazon.com', 'paypal.com'];\nconst systemPatterns = ['noreply', 'no-reply', 'mailer-daemon', 'postmaster', 'notifications', 'newsletter', 'marketing'];\nconst isSystemEmail = systemDomains.some(d => emailDomain === d || emailDomain.endsWith('.' + d)) || systemPatterns.some(p => emailLower.includes(p));\nconst hasRequestSubject = subject.toLowerCase().includes('request:');\nconst isValidRequest = !isSystemEmail && hasRequestSubject;\n\nreturn {\n  sanitizedSubject: subject,\n  sanitizedBody: body,\n  senderName: senderName,\n  senderEmail: senderEmail,\n  isValidRequest: isValidRequest\n};"
+      },
+      "id": "sanitize-email",
+      "name": "Sanitize Email Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.isValidRequest }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "validate-request",
+      "name": "Is Valid Request?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "prompt": "=You are an AI assistant that analyzes emails and extracts task information. Analyze the following email and extract information as JSON.\n\nExtract:\n- title: A short, descriptive title (max 50 chars)\n- description: The full description, add 'Dieses Ticket wurde KI-generiert.' at the end\n- priority: 1 (low), 2 (medium), or 3 (urgent) based on keywords like 'urgent', 'asap', 'critical', 'important'\n- deadline: Extract any mentioned deadline in YYYY-MM-DD format, or null if none mentioned\n- category: 'tt' for technical/bug issues, 'us' for feature requests/user stories\n\nRespond with ONLY valid JSON, no markdown, no code blocks, just the raw JSON object.\n\n--- EMAIL ---\nSubject: {{ $('Sanitize Email Data').first().json.sanitizedSubject }}\n\nBody: {{ $('Sanitize Email Data').first().json.sanitizedBody }}\n--- END EMAIL ---"
+      },
+      "id": "basic-llm-chain",
+      "name": "Parse Email with AI",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1,
+      "position": [1250, 200]
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash",
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "id": "gemini-model",
+      "name": "Google Gemini",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [1250, 400],
+      "credentials": {
+        "googleGeminiApi": {
+          "id": "YOUR_GEMINI_CREDENTIAL_ID",
+          "name": "Google Gemini API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const aiResponse = $('Parse Email with AI').first().json;\nlet aiResultText = aiResponse.text || aiResponse.response || '';\n\naiResultText = aiResultText.replace(/```json\\n?/g, '').replace(/```\\n?/g, '').trim();\n\nlet aiResult;\ntry {\n  aiResult = JSON.parse(aiResultText);\n} catch (e) {\n  aiResult = {};\n}\n\nconst sanitizedData = $('Sanitize Email Data').first().json;\n\nconst newId = `${Date.now().toString(36)}-${Math.random().toString(36).substr(2, 9)}`;\n\nconst newTask = {\n  id: newId,\n  name: aiResult.title || sanitizedData.sanitizedSubject,\n  description: aiResult.description || sanitizedData.sanitizedBody + '\\n\\nDieses Ticket wurde KI-generiert.',\n  assigned_to: '',\n  due_date: aiResult.deadline || '',\n  prio: aiResult.priority || 2,\n  category: aiResult.category || 'us',\n  subtasks: '',\n  status: 'triage',\n  creator: {\n    name: sanitizedData.senderName,\n    email: sanitizedData.senderEmail,\n    type: 'external'\n  },\n  ai_generated: true,\n  created_at: new Date().toISOString()\n};\n\nreturn {\n  newTask: newTask,\n  taskId: newId\n};"
+      },
+      "id": "prepare-task-data",
+      "name": "Prepare Task Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1450, 200]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://backendjoin-67278-default-rtdb.europe-west1.firebasedatabase.app/tasks/{{ $json.taskId }}.json",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.newTask) }}"
+      },
+      "id": "save-task",
+      "name": "Save Task to Firebase",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1650, 200],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://backendjoin-67278-default-rtdb.europe-west1.firebasedatabase.app/rate_limits/{{ $now.format('yyyy-MM-dd') }}.json",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"count\": {{ ($('Check Rate Limit').first().json.count || 0) + 1 }},\n  \"last_updated\": \"{{ $now.toISO() }}\"\n}"
+      },
+      "id": "increment-rate-limit",
+      "name": "Increment Rate Limit",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [2050, 100],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.resend.com/emails",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"from\": \"Join Team <onboarding@resend.dev>\",\n  \"to\": [\"{{ $('Sanitize Email Data').first().json.senderEmail }}\"],\n  \"subject\": \"Request Received: {{ $('Prepare Task Data').first().json.newTask.name }}\",\n  \"text\": \"Hello {{ $('Sanitize Email Data').first().json.senderName }},\\n\\nYour request has been received and added to our triage queue.\\n\\n--- Ticket Details ---\\nTicket ID: {{ $('Prepare Task Data').first().json.newTask.id }}\\nTitle: {{ $('Prepare Task Data').first().json.newTask.name }}\\nStatus: Triage\\nPriority: {{ $('Prepare Task Data').first().json.newTask.prio === 3 ? 'Urgent' : $('Prepare Task Data').first().json.newTask.prio === 2 ? 'Medium' : 'Low' }}\\n\\nYou will receive updates when the status changes.\\n\\nThank you,\\nJoin Team\"\n}"
+      },
+      "id": "send-confirmation",
+      "name": "Send Confirmation Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [2050, 200],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YOUR_RESEND_CREDENTIAL_ID",
+          "name": "Resend API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.resend.com/emails",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"from\": \"Join Team <onboarding@resend.dev>\",\n  \"to\": [\"{{ $('Sanitize Email Data').first().json.senderEmail }}\"],\n  \"subject\": \"Daily Request Limit Reached - Join\",\n  \"text\": \"Hello {{ $('Sanitize Email Data').first().json.senderName }},\\n\\nThank you for your request. Unfortunately, the daily limit of 10 automated ticket creations has been reached.\\n\\nYour email has NOT been processed automatically. However, our team has received your request and will manually review it.\\n\\nPlease try again tomorrow or contact a team member directly for urgent matters.\\n\\nThank you for your understanding,\\nJoin Team\"\n}"
+      },
+      "id": "send-limit-reached",
+      "name": "Send Limit Reached Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [850, 500],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YOUR_RESEND_CREDENTIAL_ID",
+          "name": "Resend API"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Email Trigger": {
+      "main": [
+        [
+          {
+            "node": "Check Rate Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Rate Limit": {
+      "main": [
+        [
+          {
+            "node": "Rate Limit Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rate Limit Check": {
+      "main": [
+        [
+          {
+            "node": "Sanitize Email Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Limit Reached Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sanitize Email Data": {
+      "main": [
+        [
+          {
+            "node": "Is Valid Request?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Valid Request?": {
+      "main": [
+        [
+          {
+            "node": "Parse Email with AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Parse Email with AI",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Email with AI": {
+      "main": [
+        [
+          {
+            "node": "Prepare Task Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Task Data": {
+      "main": [
+        [
+          {
+            "node": "Save Task to Firebase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Task to Firebase": {
+      "main": [
+        [
+          {
+            "node": "Increment Rate Limit",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send Confirmation Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2026-02-11T12:00:00.000Z",
+  "versionId": "7"
+}

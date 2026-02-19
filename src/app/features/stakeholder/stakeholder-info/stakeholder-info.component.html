@@ -1,0 +1,80 @@
+<div class="stakeholder-page">
+  <!-- Header -->
+  <header class="stakeholder-header">
+    <div class="header-logo-row">
+      <a routerLink="/welcome" class="logo-link">
+        <img src="assets/icons/logo_blue.png" alt="Join" class="logo" />
+      </a>
+    </div>
+
+    <div class="header-nav-row">
+      <button class="back-button" (click)="goBack()">
+        <img src="assets/icons/arrow_left_blue.png" alt="Back" />
+      </button>
+
+      <div class="usage-display">
+        <span class="usage-count">{{ usedRequests() }}</span>
+        <span class="usage-text">of <strong>10</strong> requests used today</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="stakeholder-content">
+    <!-- Desktop Title -->
+    <h1 class="main-title desktop-only">Welcome</h1>
+
+    <!-- Mobile Title Row -->
+    <div class="mobile-title-row">
+      <div class="mobile-title-left">
+        <h1 class="main-title">Welcome</h1>
+        <div class="mobile-usage-display">
+          <span class="usage-count">{{ usedRequests() }}</span>
+          <span class="usage-text">of <strong>10</strong> requests used</span>
+        </div>
+      </div>
+      <button class="mobile-back-button" (click)="goBack()">
+        <img src="assets/icons/arrow_left_blue.png" alt="Back" />
+      </button>
+    </div>
+
+    <!-- Headline - mobile only (outside content-wrapper for ordering) -->
+    <h2 class="headline mobile-only">Easily create a ticket by sending an email — no extra steps needed.</h2>
+
+    <div class="content-wrapper">
+      <div class="text-column">
+        <!-- Headline - desktop only -->
+        <h2 class="headline desktop-only">Easily create a ticket by sending an email — no extra steps needed.</h2>
+
+        <div class="info-text">
+          <p>
+            On this platform, you can submit your feature requests via email.
+            Our AI system will automatically generate a ticket with a deadline
+            and priority level.
+          </p>
+
+          <p class="limit-info">
+            A total of 10 requests can be created per day. After this limit,
+            emails can still be sent, but they will be manually reviewed by
+            our team instead of generating AI tickets.
+          </p>
+        </div>
+
+        <button class="create-request-btn" (click)="createEmailRequest()">
+          Create Email Request
+          <img src="assets/icons/check_icon_white.png" alt="" class="btn-icon" />
+        </button>
+      </div>
+
+      <div class="illustration-column">
+        <img src="assets/img/stakeholder_illustration.png" alt="Kanban Board Illustration" />
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="stakeholder-footer">
+    <a routerLink="/privacy-policy">Privacy Policy</a>
+    <a routerLink="/legal-notice">Legal notice</a>
+  </footer>
+</div>

@@ -1,0 +1,293 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+// ===========================================
+// SUCCESS OVERLAY
+// ===========================================
+
+.success-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: $z-index-overlay;
+  @include flex-center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.success-message {
+  background-color: $color-primary;
+  color: $color-text-white;
+  padding: $spacing-lg $spacing-xxl;
+  border-radius: $border-radius-md;
+  font-size: $font-size-lg;
+  animation: slideInBottom 0.3s ease-out;
+}
+
+// ===========================================
+// REGISTER PAGE
+// ===========================================
+
+.register-page {
+  min-height: 100vh;
+  background-color: $color-background;
+  display: flex;
+  flex-direction: column;
+}
+
+// ===========================================
+// HEADER
+// ===========================================
+
+.register-header {
+  background-color: $color-background;
+}
+
+.header-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: min(100%, $max-width);
+  margin: 0 auto;
+  padding: $spacing-xl clamp(32px, 6vw, 64px);
+}
+
+.logo-container {
+  cursor: pointer;
+}
+
+.logo {
+  height: 48px;
+  width: auto;
+}
+
+// ===========================================
+// MAIN CONTENT
+// ===========================================
+
+.register-main {
+  flex: 1;
+  @include flex-center;
+  padding: $spacing-md;
+}
+
+.register-card {
+  @include card;
+  width: min(652px, 100%);
+  @include flex-column;
+  align-items: center;
+  gap: $spacing-xl;
+  position: relative;
+}
+
+.back-button {
+  position: absolute;
+  top: $spacing-xxl;
+  left: $spacing-xxl;
+  background: transparent;
+  padding: $spacing-sm;
+
+  img {
+    width: 32px;
+    height: 32px;
+  }
+
+  .thick-back-button { display: none; }
+  &:hover .thin-back-button { display: none; }
+  &:hover .thick-back-button { display: block; }
+}
+
+.register-headline {
+  @include flex-column;
+  align-items: center;
+  gap: $spacing-md;
+
+  h1 {
+    font-size: 47px;
+  }
+}
+
+.separator {
+  width: 150px;
+  height: $border-width-separator;
+  background-color: $color-primary-light;
+}
+
+// ===========================================
+// FORM
+// ===========================================
+
+.register-form {
+  width: min(100%, 422px);
+  @include flex-column;
+  gap: $spacing-md;
+}
+
+.input-group {
+  @include flex-column;
+  gap: $spacing-xs;
+}
+
+.input-container {
+  @include input-container;
+}
+
+.input-field {
+  @include input-field;
+}
+
+.input-icon {
+  width: 24px;
+  height: 24px;
+
+  &.clickable {
+    cursor: pointer;
+  }
+}
+
+.error-message {
+  font-size: $font-size-sm;
+  color: $color-error-light;
+  min-height: $spacing-md;
+}
+
+// ===========================================
+// CHECKBOX
+// ===========================================
+
+.checkbox-group {
+  margin-top: $spacing-sm;
+
+  &.error .checkbox-custom {
+    border-color: $color-error;
+  }
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  cursor: pointer;
+
+  input[type="checkbox"] {
+    display: none;
+
+    &:checked + .checkbox-custom {
+      background-color: $color-primary;
+      border-color: $color-primary;
+
+      &::after {
+        content: '';
+        position: absolute;
+        left: 5px;
+        top: 1px;
+        width: 6px;
+        height: 12px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+      }
+    }
+  }
+}
+
+.checkbox-custom {
+  width: 20px;
+  height: 20px;
+  border: 2px solid $color-border;
+  border-radius: 4px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.checkbox-text {
+  font-size: $font-size-base;
+  color: $color-text-primary;
+
+  a {
+    color: $color-primary-light;
+    text-decoration: underline;
+
+    &:hover {
+      color: $color-primary;
+    }
+  }
+}
+
+// ===========================================
+// BUTTONS
+// ===========================================
+
+.signup-btn {
+  @include button-primary;
+  width: 100%;
+  font-size: $font-size-lg;
+  margin-top: $spacing-md;
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+// ===========================================
+// FOOTER
+// ===========================================
+
+.register-footer {
+  display: flex;
+  justify-content: center;
+  gap: $spacing-xl;
+  padding: $spacing-lg;
+
+  a {
+    color: $color-text-muted;
+    font-size: $font-size-base;
+
+    &:hover {
+      color: $color-primary-light;
+    }
+  }
+}
+
+// ===========================================
+// ANIMATIONS
+// ===========================================
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInBottom {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+// ===========================================
+// MOBILE STYLES
+// ===========================================
+
+@include mobile {
+  .register-card {
+    padding: $spacing-lg;
+  }
+
+  .back-button {
+    top: $spacing-lg;
+    left: $spacing-lg;
+  }
+
+  .register-headline h1 {
+    font-size: 36px;
+  }
+}

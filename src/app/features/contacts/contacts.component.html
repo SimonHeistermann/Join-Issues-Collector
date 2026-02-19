@@ -1,0 +1,218 @@
+<app-sidebar />
+<app-header />
+<main class="main-content">
+  <!-- LEFT: Contact List -->
+  <div class="contacts-table">
+    <div class="add-contact-button-container">
+      <button class="add-contact-button" (click)="openAddOverlay()">
+        Add new contact
+        <img src="assets/icons/person_add_icon_white.png" alt="Add">
+      </button>
+    </div>
+
+    <div class="contacts-container">
+      @for (group of contactGroups; track group.letter) {
+        <div class="contacts-sections">
+          <div class="contacts-letter-text">{{ group.letter }}</div>
+          <div class="contacts-separator"></div>
+          <div class="contact-boxes">
+            @for (contact of group.contacts; track contact.id) {
+              <div class="contact" [class.contacts-active]="isSelected(contact)"
+                (click)="selectContact(contact)">
+                <div class="contacts-profilebadge" [ngClass]="getBadgeColor(contact.name)">
+                  {{ getInitials(contact.name) }}
+                </div>
+                <div class="contact-information-box">
+                  <h3>{{ contact.name }}{{ isCurrentUser(contact) ? ' (You)' : '' }}</h3>
+                  <span class="contact-mail-text">{{ contact.email }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- RIGHT: Contact Details -->
+  <div class="contact-overview" [class.mobile-open]="mobileDetailsOpen">
+    <div class="contact-overview-header">
+      <h1>Contacts</h1>
+      <div class="contact-overview-header-separator"></div>
+      <h2>Better with a team</h2>
+      <div class="contact-overview-header-separator-mobile"></div>
+    </div>
+
+    @if (selectedContact) {
+      <div class="contact-overview-content" [class.active]="detailsVisible">
+        <!-- Name & Badge -->
+        <div class="contact-name-box">
+          <div class="contacts-profilebadge-big" [ngClass]="getBadgeColor(selectedContact.name)">
+            {{ getInitials(selectedContact.name) }}
+          </div>
+          <div class="contacts-name-box-right">
+            <div class="contact-name-bigtext">{{ selectedContact.name }}</div>
+            <div class="contact-buttons-container">
+              <button class="edit-contact-button" (click)="openEditOverlay()">
+                <img class="edit-icon-default" src="assets/icons/edit_icon_blue.png" alt="Edit">
+                <img class="edit-icon-hover" src="assets/icons/edit_icon_lightblue.png" alt="Edit">
+                Edit
+              </button>
+              <button class="delete-contact-button" (click)="deleteContact()">
+                <img class="delete-icon-default" src="assets/icons/delete_icon_blue.png" alt="Delete">
+                <img class="delete-icon-hover" src="assets/icons/delete_icon_lightblue.png" alt="Delete">
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="contact-information-headlines">Contact Information</div>
+        <div class="contact-information-boxes">
+          <div class="contact-information-containers">
+            <span class="contact-info-label">Email</span>
+            <a class="contact-mail-link" href="mailto:{{ selectedContact.email }}">{{ selectedContact.email }}</a>
+          </div>
+          <div class="contact-information-containers">
+            <span class="contact-info-label">Phone</span>
+            <span class="contact-phonenumber">{{ selectedContact.phone || '-' }}</span>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Notification -->
+    @if (showNotification) {
+      <div class="contact-created-notification active">
+        {{ notificationText }}
+      </div>
+    }
+  </div>
+</main>
+
+<!-- Mobile: Back Button (when details open) -->
+@if (mobileDetailsOpen) {
+  <button class="back-button" (click)="closeMobileDetails()">
+    <img class="thin-back-button" src="assets/icons/arrow_left_icon_light_blue_thin.png" alt="Back">
+    <img class="thick-back-button" src="assets/icons/arrow_left_icon_light_blue_thick.png" alt="Back">
+  </button>
+}
+
+<!-- Mobile: FAB Button -->
+@if (!mobileDetailsOpen) {
+  <button class="add-contact-button-mobile" (click)="openAddOverlay()">
+    <img src="assets/icons/person_add_icon_white.png" alt="Add Contact">
+  </button>
+}
+
+<!-- Mobile: Options FAB (when details open) -->
+@if (mobileDetailsOpen && selectedContact) {
+  <button class="add-contact-button-mobile" (click)="toggleMobileMenu()">
+    <img src="assets/icons/three_dots_icon_white.png" alt="Options">
+  </button>
+}
+
+<!-- Mobile: Edit/Delete Menu -->
+@if (mobileMenuOpen) {
+  <div class="overlay-mobile-menu" (click)="closeMobileMenu()">
+    <div class="mobile-menu" [class.active]="mobileMenuOpen" (click)="stopPropagation($event)">
+      <button (click)="openEditOverlay()">
+        <img src="assets/icons/edit_icon_blue.png" alt="Edit"> Edit
+      </button>
+      <button (click)="deleteContact()">
+        <img src="assets/icons/delete_icon_blue.png" alt="Delete"> Delete
+      </button>
+    </div>
+  </div>
+}
+
+<!-- Add/Edit Overlay -->
+@if (overlayOpen) {
+  <div class="overlay" (click)="closeOverlay()">
+    <div class="overlay-content">
+      <div class="add-contact-overlay" (click)="stopPropagation($event)">
+        <!-- Left: Branding -->
+        <div class="add-contact-overlay-left">
+          <div class="add-contact-overlay-left-content">
+            <img src="assets/icons/logo_sidebar.png" alt="Join Logo">
+            <h2>{{ overlayMode === 'add' ? 'Add contact' : 'Edit contact' }}</h2>
+            <div class="add-contact-overlay-separator"></div>
+            <p>Tasks are better with a team!</p>
+          </div>
+        </div>
+
+        <!-- Right: Form -->
+        <div class="add-contact-overlay-right">
+          <div class="close-button-box">
+            <button class="close-button" (click)="closeOverlay()">
+              <img class="close-button-img" src="assets/icons/close_icon_blue.png" alt="Close">
+              <img class="close-button-hover-img" src="assets/icons/close_icon_blue_hover.png" alt="Close">
+            </button>
+          </div>
+
+          <form class="add-contact-form" (submit)="handleFormSubmit($event)">
+            <div class="add-contact-container">
+              @if (overlayMode === 'add') {
+                <div class="default-profilebadge">
+                  <img src="assets/icons/person_icon_white.png" alt="Contact">
+                </div>
+              } @else if (selectedContact) {
+                <div class="contacts-profilebadge-big" [ngClass]="getBadgeColor(selectedContact.name)">
+                  {{ getInitials(selectedContact.name) }}
+                </div>
+              }
+
+              <div class="add-contact-inputbox">
+                <div>
+                  <div class="person-container" [class.error-input]="nameError">
+                    <input class="person-input" type="text" placeholder="Name"
+                      [(ngModel)]="formData.name" name="name" (keydown)="handleKeyDown($event)">
+                    <label><img class="person-logo" src="assets/icons/person_icon_gray.png" alt="Name"></label>
+                  </div>
+                  <div class="error-message" [class.active]="nameError">{{ nameError }}</div>
+                </div>
+                <div>
+                  <div class="email-container" [class.error-input]="emailError">
+                    <input class="email-input" type="text" placeholder="Email"
+                      [(ngModel)]="formData.email" name="email" (keydown)="handleKeyDown($event)">
+                    <label><img class="email-logo" src="assets/icons/mail_icon_gray.png" alt="Email"></label>
+                  </div>
+                  <div class="error-message" [class.active]="emailError">{{ emailError }}</div>
+                </div>
+                <div class="phone-box">
+                  <div class="phone-container" [class.error-input]="phoneError">
+                    <input class="phone-input" type="text" placeholder="Phone"
+                      [(ngModel)]="formData.phone" name="phone" (keydown)="handleKeyDown($event)">
+                    <label><img class="phone-logo" src="assets/icons/phone_icon_gray.png" alt="Phone"></label>
+                  </div>
+                  <div class="error-message" [class.active]="phoneError">{{ phoneError }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="add-contact-buttonbox" [class.edit-contact-buttonbox]="overlayMode === 'edit'">
+              @if (overlayMode === 'add') {
+                <button type="button" class="cancel-button" (click)="closeOverlay()">
+                  Cancel
+                  <img class="cancel-button-img" src="assets/icons/cancel_icon_blue.png" alt="Cancel">
+                  <img class="cancel-button-img-hover" src="assets/icons/cancel_icon_lightblue.png" alt="Cancel">
+                </button>
+                <button type="submit" class="create-contact-button">
+                  Create contact
+                  <img src="assets/icons/hook_icon_white.png" alt="Create">
+                </button>
+              } @else {
+                <button type="button" class="delete-button" (click)="deleteContact()">Delete</button>
+                <button type="submit" class="save-button">
+                  Save
+                  <img src="assets/icons/hook_icon_white.png" alt="Save">
+                </button>
+              }
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+}

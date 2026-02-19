@@ -1,0 +1,85 @@
+<!-- Login Content -->
+<div class="login-page">
+  <header class="login-header">
+    <div class="header-container">
+      <a routerLink="/welcome" class="logo-container">
+        <img src="assets/icons/logo_blue.png" alt="Join" class="small-logo" />
+      </a>
+
+      <div class="header-buttons">
+        <span class="not-user-text">Not a Join user?</span>
+        <button class="signup-btn" routerLink="/register">Sign up</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="login-main">
+    <div class="login-card">
+      <div class="login-headline">
+        <h1>Log in</h1>
+        <div class="separator"></div>
+      </div>
+
+      <form class="login-form" (ngSubmit)="onSubmit()">
+        <div class="input-group">
+          <div class="input-container" [class.error]="emailError()">
+            <input
+              type="email"
+              [(ngModel)]="email"
+              name="email"
+              placeholder="Email"
+              class="input-field"
+              (input)="clearErrors()"
+            />
+            <label>
+              <img src="assets/icons/mail_icon_gray.png" alt="" class="input-icon" />
+            </label>
+          </div>
+          <span *ngIf="emailError()" class="error-message">{{ emailError() }}</span>
+        </div>
+
+        <div class="input-group">
+          <div class="input-container" [class.error]="passwordError()">
+            <input
+              [type]="showPassword() ? 'text' : 'password'"
+              [(ngModel)]="password"
+              name="password"
+              placeholder="Password"
+              class="input-field"
+              (input)="clearErrors()"
+            />
+            <label (click)="togglePassword()">
+              <img
+                *ngIf="password && password.length > 0"
+                [src]="showPassword() ? 'assets/icons/eye_icon_gray.png' : 'assets/icons/visibility_off_icon_gray.png'"
+                alt=""
+                class="input-icon clickable"
+              />
+              <img
+                *ngIf="!password || password.length === 0"
+                src="assets/icons/lock_icon_gray.png"
+                alt=""
+                class="input-icon"
+              />
+            </label>
+          </div>
+          <span *ngIf="passwordError()" class="error-message">{{ passwordError() }}</span>
+        </div>
+
+        <div class="button-group">
+          <button type="submit" class="login-btn" [disabled]="isLoading()">
+            {{ isLoading() ? 'Logging in...' : 'Log in' }}
+          </button>
+          <button type="button" class="guest-btn" (click)="guestLogin()">
+            Guest Log in
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <footer class="login-footer">
+    <a routerLink="/privacy-policy">Privacy Policy</a>
+    <a routerLink="/legal-notice">Legal notice</a>
+  </footer>
+</div>

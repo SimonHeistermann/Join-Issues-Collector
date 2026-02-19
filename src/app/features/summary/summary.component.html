@@ -1,0 +1,119 @@
+<app-sidebar />
+<app-header />
+
+<main class="main-content">
+  <!-- Headline: Join 360 -->
+  <div class="summary-headline">
+    <h1>Join 360</h1>
+    <div class="headline-separator"></div>
+    <h2>Key Metrics at a Glance</h2>
+    <div class="headline-separator-mobile"></div>
+  </div>
+
+  <div class="summary-content">
+    <!-- Key Metrics -->
+    <div class="keymetrics-container">
+      <!-- Row 1: To-do + Done -->
+      <div class="firstrow-keymetrics">
+        <div class="firstrow-behindbox">
+          <div class="keymetrics-box keymetrics-todo" (click)="goToBoard()">
+            <div class="todo-icon">
+              <img class="white-todoicon" src="assets/icons/edit_icon_todo_white.png" alt="" />
+              <img class="blue-todoicon" src="assets/icons/edit_icon_todo_blue.png" alt="" />
+            </div>
+            <div class="todo-textbox">
+              <span class="keymetrics-number">{{ taskCounts().todo }}</span>
+              <span class="keymetrics-text">To-do</span>
+            </div>
+          </div>
+        </div>
+        <div class="firstrow-behindbox">
+          <div class="keymetrics-box keymetrics-done" (click)="goToBoard()">
+            <div class="done-icon">
+              <img class="white-doneicon" src="assets/icons/hook_icon_done_white.png" alt="" />
+              <img class="blue-doneicon" src="assets/icons/hook_icon_done_blue.png" alt="" />
+            </div>
+            <div class="done-textbox">
+              <span class="keymetrics-number">{{ taskCounts().done }}</span>
+              <span class="keymetrics-text">Done</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2: Urgent + Deadline + Email Requests -->
+      <div class="secondrow-keymetrics">
+        <div class="secondrow-behindbox secondrow-urgent-box">
+          <div class="keymetrics-box keymetrics-urgent" (click)="goToBoard()">
+            <div class="urgent-leftbox">
+              <div class="urgent-icon">
+                <img src="assets/icons/urgent_icon_white.png" alt="" />
+              </div>
+              <div class="urgent-textbox">
+                <span class="keymetrics-number">{{ taskCounts().urgent }}</span>
+                <span class="keymetrics-text">Urgent</span>
+              </div>
+            </div>
+            <div class="urgent-separator"></div>
+            <div class="urgent-textboxright">
+              @if (nextDeadline()) {
+                <span class="urgent-date">{{ nextDeadline() | date:'MMMM d, yyyy' }}</span>
+              } @else {
+                <span class="urgent-date">No deadline</span>
+              }
+              <span class="keymetrics-text">Upcoming Deadline</span>
+            </div>
+          </div>
+        </div>
+        <div class="secondrow-behindbox secondrow-email-box">
+          <div class="keymetrics-box keymetrics-email" (click)="goToBoard()">
+            <span class="keymetrics-number email-request-number">{{ taskCounts().triage }}</span>
+            <span class="keymetrics-text">Email requests</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 3: Board / Progress / Feedback / Triage -->
+      <div class="thirdrow-keymetrics">
+        <div class="thirdrow-behindbox">
+          <div class="keymetrics-box keymetrics-lastrow" (click)="goToBoard()">
+            <span class="keymetrics-number">{{ taskCounts().total }}</span>
+            <span class="keymetrics-textthirdrow">Tasks in Board</span>
+          </div>
+        </div>
+        <div class="thirdrow-behindbox">
+          <div class="keymetrics-box keymetrics-lastrow" (click)="goToBoard()">
+            <span class="keymetrics-number">{{ taskCounts().inProgress }}</span>
+            <span class="keymetrics-textthirdrow">Tasks in Progress</span>
+          </div>
+        </div>
+        <div class="thirdrow-behindbox">
+          <div class="keymetrics-box keymetrics-lastrow" (click)="goToBoard()">
+            <span class="keymetrics-number">{{ taskCounts().awaitFeedback }}</span>
+            <span class="keymetrics-textthirdrow">Awaiting Feedback</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Greeting -->
+    <div class="greet-box">
+      <span class="greeting">Good {{ timeOfDay() }}{{ isGuest() ? '!' : ',' }}</span>
+      @if (!isGuest()) {
+        <span class="greeting-name">{{ userName() }}</span>
+      }
+    </div>
+  </div>
+</main>
+
+<!-- Mobile Greeting Overlay -->
+@if (mobileGreetingVisible()) {
+  <div class="greet-overlay-mobile" [class.deactive]="!mobileGreetingActive()">
+    <div class="greet-box-mobile" [class.active]="mobileGreetingActive()">
+      <span class="greeting">Good {{ timeOfDay() }}{{ isGuest() ? '!' : ',' }}</span>
+      @if (!isGuest()) {
+        <span class="greeting-name">{{ userName() }}</span>
+      }
+    </div>
+  </div>
+}

@@ -1,0 +1,93 @@
+@if (isLoggedIn()) {
+  <app-sidebar />
+  <app-header />
+  <main class="main-content">
+    <div class="page-headline">
+      <h1 class="page-title">Legal Notice</h1>
+      <button class="back-button" (click)="goBack()">
+        <img class="thin-back-button" src="assets/icons/arrow_left_icon_light_blue_thin.png" alt="Back" />
+        <img class="thick-back-button" src="assets/icons/arrow_left_icon_light_blue_thick.png" alt="Back" />
+      </button>
+    </div>
+    <ng-container *ngTemplateOutlet="legalContent" />
+  </main>
+} @else {
+  <div class="legal-page">
+    <header class="legal-header">
+      <a class="back-link" (click)="goBack()">
+        <img src="assets/icons/arrow_left.png" alt="Back" />
+      </a>
+    </header>
+    <main class="legal-content-standalone">
+      <h1 class="page-title">Legal Notice</h1>
+      <ng-container *ngTemplateOutlet="legalContent" />
+    </main>
+  </div>
+}
+
+<ng-template #legalContent>
+  <section class="legal-section">
+    <h2 class="legal-subtitle">Imprint</h2>
+    <p>Simon Heistermann<br>
+       46325 Borken<br>
+       Deutschland</p>
+  </section>
+
+  <section class="legal-section">
+    <h2 class="legal-subtitle">Exploring the Board</h2>
+    <p>Email: <a href="mailto:business@heistermann-solutions.de">business&#64;heistermann-solutions.de</a></p>
+  </section>
+
+  <section class="legal-section">
+    <h2 class="legal-subtitle">Acceptance of Terms</h2>
+    <p>By accessing and using <strong>Join</strong> (Product), you acknowledge and agree to the following terms and conditions,
+       and any policies, guidelines, or amendments that may be presented from time to time.
+       The listed students may update or change the terms and conditions without notice.</p>
+  </section>
+
+  <section class="legal-section">
+    <h2 class="legal-subtitle">Scope and Ownership of the Product</h2>
+    <p><strong>Join</strong> has been developed as part of a student group project in a web development bootcamp
+       at the <a href="https://developerakademie.com/" class="da-link" target="_blank">Developer Akademie GmbH</a>.
+       It has an educational purpose and is not intended for extensive personal or business use.
+       Therefore, we cannot guarantee its availability, reliability, or accuracy.</p>
+    <p>The design of <strong>Join</strong> is owned by
+       <a href="https://developerakademie.com/" class="da-link" target="_blank">Developer Akademie GmbH</a>.
+       Unauthorized use, reproduction, modification, or distribution is strictly prohibited.</p>
+  </section>
+
+  <section class="legal-section">
+    <h2 class="legal-subtitle">Proprietary Rights</h2>
+    <p>Apart from the design owned by
+       <a href="https://developerakademie.com/" class="da-link" target="_blank">Developer Akademie GmbH</a>,
+       the listed students retain all proprietary rights in <strong>Join</strong>,
+       including any copyrighted material, trademarks, and other proprietary information.</p>
+  </section>
+
+  <section class="legal-section">
+    <h2 class="legal-subtitle">Use of the Product</h2>
+    <p><strong>Join</strong> is intended to be used for lawful purposes only. Any illegal activities, harassment,
+       or threats against other users are strictly prohibited. You are solely responsible for your interactions with others.</p>
+  </section>
+
+  <section class="legal-section">
+    <h2 class="legal-subtitle">Disclaimer of Warranties and Limitation of Liability</h2>
+    <p><strong>Join</strong> is provided "as is" without warranties of any kind. In no event will the listed students
+       or <a href="https://developerakademie.com/" class="da-link" target="_blank">Developer Akademie GmbH</a>
+       be liable for damages resulting from the use of this product.</p>
+  </section>
+
+  <section class="legal-section">
+    <h2 class="legal-subtitle">Indemnity</h2>
+    <p>You agree to indemnify and hold harmless the listed students,
+       <a href="https://developerakademie.com/" class="da-link" target="_blank">Developer Akademie GmbH</a>, and affiliates
+       from any claims, damages, or costs arising from your use of <strong>Join</strong>.</p>
+  </section>
+
+  <section class="legal-section">
+    <h2 class="legal-subtitle">Contact</h2>
+    <p>For any questions, please contact us at:<br>
+       <a href="mailto:business@heistermann-solutions.de">Email to Simon Heistermann</a></p>
+    <p><strong>Date:</strong> 11.12.2025</p>
+  </section>
+</ng-template>

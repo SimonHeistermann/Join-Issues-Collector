@@ -1,0 +1,175 @@
+// Import SCSS partials - @use rules must come first
+@use 'app/styles/variables' as *;
+@use 'app/styles/mixins' as *;
+@use 'app/styles/fonts';
+@use 'app/styles/animations';
+
+// ===========================================
+// GLOBAL RESET & BASE STYLES
+// ===========================================
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: $font-family;
+  font-optical-sizing: auto;
+  font-weight: $font-weight-regular;
+  font-size: $font-size-base;
+  background-color: $color-background;
+  color: $color-text-primary;
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+// ===========================================
+// TYPOGRAPHY
+// ===========================================
+
+h1 {
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+}
+
+h2 {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-regular;
+  color: $color-text-primary;
+}
+
+h3 {
+  font-size: $font-size-md;
+  font-weight: $font-weight-regular;
+  color: $color-text-primary;
+}
+
+a {
+  text-decoration: none;
+  color: $color-text-muted;
+  transition: color $transition-normal;
+
+  &:hover {
+    color: $color-primary-light;
+  }
+}
+
+// ===========================================
+// ACCESSIBILITY
+// ===========================================
+
+:focus-visible {
+  outline: 2px solid $color-primary-light;
+  outline-offset: 2px;
+}
+
+// ===========================================
+// FORM ELEMENTS
+// ===========================================
+
+button {
+  border: unset;
+  cursor: pointer;
+  font-family: $font-family;
+  background: transparent;
+}
+
+input,
+textarea,
+select {
+  font-family: $font-family;
+}
+
+// ===========================================
+// UTILITY CLASSES
+// ===========================================
+
+.d-none {
+  display: none !important;
+}
+
+.d-flex {
+  display: flex !important;
+}
+
+.d-block {
+  display: block !important;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-error {
+  color: $color-error;
+}
+
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+// ===========================================
+// BADGE COLORS
+// ===========================================
+
+@each $num, $color in $badge-colors {
+  .bgcolor__#{$num} {
+    background-color: $color;
+  }
+}
+
+// ===========================================
+// SCROLLBAR
+// ===========================================
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: $color-border;
+  border-radius: $border-radius-sm;
+
+  &:hover {
+    background-color: $color-text-muted;
+  }
+}
+
+// ===========================================
+// RESPONSIVE TYPOGRAPHY
+// ===========================================
+
+@include mobile {
+  h1 {
+    font-size: 47px;
+  }
+
+  h2 {
+    font-size: 21px;
+  }
+}

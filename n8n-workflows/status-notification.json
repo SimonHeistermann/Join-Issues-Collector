@@ -1,0 +1,226 @@
+{
+  "name": "Join Status Notification Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "task-status-change",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "task-status-change"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.body.creator?.type }}",
+              "operation": "equal",
+              "value2": "external"
+            }
+          ]
+        }
+      },
+      "id": "check-external-creator",
+      "name": "Is External Creator?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const task = $input.first().json.body;\n\n// Status label mapping\nconst statusLabels = {\n  'triage': 'Triage',\n  'to-do': 'To Do',\n  'in-progress': 'In Progress',\n  'await-feedback': 'Awaiting Feedback',\n  'done': 'Done'\n};\n\n// Priority label mapping\nconst priorityLabels = {\n  1: 'Low',\n  2: 'Medium',\n  3: 'Urgent'\n};\n\nconst previousStatus = statusLabels[task.previousStatus] || task.previousStatus;\nconst newStatus = statusLabels[task.newStatus] || task.newStatus;\nconst priority = priorityLabels[task.prio] || 'Medium';\n\n// Determine if this is a completion notification\nconst isCompleted = task.newStatus === 'done';\n\nreturn {\n  taskId: task.id,\n  taskName: task.name,\n  taskDescription: task.description,\n  previousStatus: previousStatus,\n  newStatus: newStatus,\n  priority: priority,\n  dueDate: task.due_date || 'Not set',\n  creatorName: task.creator?.name || 'Unknown',\n  creatorEmail: task.creator?.email,\n  isCompleted: isCompleted,\n  updatedAt: new Date().toISOString()\n};"
+      },
+      "id": "prepare-notification-data",
+      "name": "Prepare Notification Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [650, 200]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.isCompleted }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "check-completed",
+      "name": "Is Task Completed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [850, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.resend.com/emails",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"from\": \"Join Team <onboarding@resend.dev>\",\n  \"to\": [\"{{ $json.creatorEmail }}\"],\n  \"subject\": \"Your Request Has Been Completed: {{ $json.taskName }}\",\n  \"text\": \"Hello {{ $json.creatorName }},\\n\\nGreat news! Your request has been completed.\\n\\n--- Ticket Details ---\\nTicket ID: {{ $json.taskId }}\\nTitle: {{ $json.taskName }}\\nStatus: {{ $json.newStatus }}\\nPriority: {{ $json.priority }}\\nDue Date: {{ $json.dueDate }}\\n\\n--- Description ---\\n{{ $json.taskDescription }}\\n\\n---\\n\\nIf you have any questions or need follow-up assistance, please reply to this email or create a new request.\\n\\nThank you for using Join!\\nJoin Team\"\n}"
+      },
+      "id": "send-completion-email",
+      "name": "Send Completion Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1050, 100],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YOUR_RESEND_CREDENTIAL_ID",
+          "name": "Resend API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.resend.com/emails",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"from\": \"Join Team <onboarding@resend.dev>\",\n  \"to\": [\"{{ $json.creatorEmail }}\"],\n  \"subject\": \"Status Update: {{ $json.taskName }}\",\n  \"text\": \"Hello {{ $json.creatorName }},\\n\\nThe status of your request has been updated.\\n\\n--- Ticket Details ---\\nTicket ID: {{ $json.taskId }}\\nTitle: {{ $json.taskName }}\\nPrevious Status: {{ $json.previousStatus }}\\nNew Status: {{ $json.newStatus }}\\nPriority: {{ $json.priority }}\\nDue Date: {{ $json.dueDate }}\\n\\n--- Description ---\\n{{ $json.taskDescription }}\\n\\n---\\n\\nYou will receive another notification when the status changes again.\\n\\nThank you,\\nJoin Team\"\n}"
+      },
+      "id": "send-status-update-email",
+      "name": "Send Status Update Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1050, 300],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YOUR_RESEND_CREDENTIAL_ID",
+          "name": "Resend API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: true, message: 'Notification sent', taskId: $('Prepare Notification Data').first().json.taskId }) }}"
+      },
+      "id": "respond-success",
+      "name": "Respond Success",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1250, 200]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: true, message: 'No notification needed - internal creator', taskId: $json.body.id }) }}"
+      },
+      "id": "respond-skipped",
+      "name": "Respond Skipped",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [650, 400]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Is External Creator?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is External Creator?": {
+      "main": [
+        [
+          {
+            "node": "Prepare Notification Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Skipped",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Notification Data": {
+      "main": [
+        [
+          {
+            "node": "Is Task Completed?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Task Completed?": {
+      "main": [
+        [
+          {
+            "node": "Send Completion Email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Status Update Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Completion Email": {
+      "main": [
+        [
+          {
+            "node": "Respond Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Status Update Email": {
+      "main": [
+        [
+          {
+            "node": "Respond Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-02-11T12:00:00.000Z",
+  "versionId": "2"
+}

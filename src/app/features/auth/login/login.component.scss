@@ -1,0 +1,204 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+// ===========================================
+// LOGIN PAGE
+// ===========================================
+
+.login-page {
+  min-height: 100vh;
+  background-color: $color-background;
+  display: flex;
+  flex-direction: column;
+}
+
+// ===========================================
+// HEADER
+// ===========================================
+
+.login-header {
+  background-color: $color-background;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: min(100%, $max-width);
+  margin: 0 auto;
+  padding: $spacing-xl clamp(32px, 6vw, 64px);
+}
+
+.logo-container {
+  cursor: pointer;
+}
+
+.small-logo {
+  height: 48px;
+  width: auto;
+}
+
+.header-buttons {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.not-user-text {
+  color: $color-text-primary;
+  font-size: $font-size-base;
+}
+
+.signup-btn {
+  @include button-primary;
+}
+
+// ===========================================
+// MAIN CONTENT
+// ===========================================
+
+.login-main {
+  flex: 1;
+  @include flex-center;
+  padding: $spacing-md;
+}
+
+.login-card {
+  @include card;
+  width: min(652px, 100%);
+  @include flex-column;
+  align-items: center;
+  gap: $spacing-xl;
+}
+
+.login-headline {
+  @include flex-column;
+  align-items: center;
+  gap: $spacing-md;
+
+  h1 {
+    font-size: 47px;
+  }
+}
+
+.separator {
+  width: 150px;
+  height: $border-width-separator;
+  background-color: $color-primary-light;
+}
+
+// ===========================================
+// FORM
+// ===========================================
+
+.login-form {
+  width: min(100%, 422px);
+  @include flex-column;
+  gap: $spacing-lg;
+}
+
+.input-group {
+  @include flex-column;
+  gap: $spacing-sm;
+}
+
+.input-container {
+  @include input-container;
+}
+
+.input-field {
+  @include input-field;
+}
+
+.input-icon {
+  width: 24px;
+  height: 24px;
+
+  &.clickable {
+    cursor: pointer;
+  }
+}
+
+.error-message {
+  font-size: $font-size-sm;
+  color: $color-error-light;
+  height: $spacing-md;
+}
+
+// ===========================================
+// BUTTONS
+// ===========================================
+
+.button-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-xl;
+  margin-top: $spacing-md;
+}
+
+.login-btn {
+  @include button-primary;
+  font-size: $font-size-lg;
+  min-width: 120px;
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.guest-btn {
+  @include button-secondary;
+  font-size: $font-size-lg;
+}
+
+// ===========================================
+// FOOTER
+// ===========================================
+
+.login-footer {
+  display: flex;
+  justify-content: center;
+  gap: $spacing-xl;
+  padding: $spacing-lg;
+
+  a {
+    color: $color-text-muted;
+    font-size: $font-size-base;
+
+    &:hover {
+      color: $color-primary-light;
+    }
+  }
+}
+
+// ===========================================
+// MOBILE STYLES
+// ===========================================
+
+@include mobile {
+  .header-buttons {
+    .not-user-text {
+      display: none;
+    }
+  }
+
+  .login-card {
+    padding: $spacing-lg;
+  }
+
+  .login-headline h1 {
+    font-size: 36px;
+  }
+
+  .button-group {
+    flex-direction: column;
+    gap: $spacing-md;
+  }
+
+  .login-btn,
+  .guest-btn {
+    width: 100%;
+  }
+}

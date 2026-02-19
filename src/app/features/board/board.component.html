@@ -1,0 +1,400 @@
+<app-sidebar />
+<app-header />
+
+<main class="main-content">
+  <!-- Board Header -->
+  <div class="board-header">
+    <h1>Board</h1>
+    <div class="board-header-right">
+      <div class="searchbar-container">
+        <input
+          type="text"
+          placeholder="Find Task"
+          aria-label="Search tasks"
+          [(ngModel)]="searchTerm"
+          class="searchbar"
+        />
+        <div class="searchbar-right">
+          <div class="searchbar-separator"></div>
+          <label>
+            <img src="assets/icons/search_icon_blue.png" alt="Search" class="searchbar-icon" />
+          </label>
+        </div>
+      </div>
+      <button class="add-task-btn" (click)="openAddTaskOverlay()" aria-label="Add new task">
+        Add Task
+        <img src="assets/icons/add_icon_white.png" alt="" />
+      </button>
+    </div>
+  </div>
+
+  <!-- Board Content -->
+  <div class="board-content" cdkDropListGroup>
+    @for (column of columns; track column.id) {
+      <div class="board-column">
+        <div class="column-header">
+          <span class="column-title">{{ column.label }}</span>
+          @if (column.id !== 'triage') {
+            <button class="column-add-btn" (click)="openAddTaskOverlay(column.id)" [attr.aria-label]="'Add task to ' + column.label">
+              <img src="assets/icons/add_icon_blue.png" alt="" />
+            </button>
+          }
+        </div>
+
+        <div
+          class="column-content"
+          cdkDropList
+          cdkDropListSortingDisabled
+          [cdkDropListData]="getTasksForColumn(column.id)"
+          [id]="column.id"
+          [cdkDropListConnectedTo]="columnIds"
+          (cdkDropListDropped)="onTaskDrop($event, column.id)"
+        >
+          @for (task of getTasksForColumn(column.id); track task.id) {
+            <div class="board-card" cdkDrag [cdkDragData]="task" (click)="openTaskDetails(task)">
+              <!-- Category Badge -->
+              <div class="card-category" [class]="getCategoryClass(task.category)">
+                {{ getCategoryLabel(task.category) }}
+              </div>
+
+              <!-- Task Content -->
+              <div class="card-center">
+                <span class="card-title">{{ task.name }}</span>
+                <span class="card-description">{{ task.description | truncate:44 }}</span>
+              </div>
+
+              <!-- Creator Badge -->
+              @if (task.creator) {
+                <div class="card-creator">
+                  <span class="creator-badge" [class.external]="task.creator.type === 'external'">
+                    {{ task.creator.type === 'external' ? 'Extern' : 'Member' }}
+                  </span>
+                </div>
+              }
+
+              <!-- Subtasks Progress -->
+              @if (hasSubtasks(task)) {
+                <div class="progress-container">
+                  <div class="progress-bar">
+                    <div class="progress-fill" [style.width.%]="getCompletionPercentage(task)"></div>
+                  </div>
+                  <span class="progress-text">{{ getCompletedSubtasks(task) }}/{{ getSubtaskCount(task) }} Subtasks</span>
+                </div>
+              }
+
+              <!-- Footer -->
+              <div class="card-footer">
+                <div class="badges-container">
+                  @for (assignee of getAssignees(task).slice(0, 4); track assignee) {
+                    <app-avatar-badge [name]="assignee" [size]="32" />
+                  }
+                  @if (getAssignees(task).length > 4) {
+                    <span class="more-badges">+{{ getAssignees(task).length - 4 }}</span>
+                  }
+                </div>
+                <app-priority-icon [priority]="task.prio" />
+              </div>
+            </div>
+          } @empty {
+            <div class="no-task-placeholder">
+              No tasks in {{ column.label }}
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</main>
+
+<!-- Add Task Overlay -->
+@if (addTaskOverlayOpen) {
+  <div class="add-task-overlay" (click)="closeAddTaskOverlay()" role="dialog" aria-label="Add task">
+    <div class="add-task-overlay-panel" (click)="stopPropagation($event)">
+      <app-add-task
+        [overlayMode]="true"
+        [defaultStatus]="addTaskDefaultStatus"
+        (taskCreated)="onTaskCreated()"
+        (overlayClose)="closeAddTaskOverlay()"
+      />
+    </div>
+  </div>
+}
+
+<!-- Task Detail / Edit Overlay -->
+@if (detailOverlayOpen && selectedTask) {
+  <div class="detail-overlay" (click)="closeTaskDetails()" role="dialog" aria-label="Task details">
+    <div class="detail-overlay-card" [class.active]="detailOverlayOpen" [class.edit-mode]="editMode" (click)="stopPropagation($event)">
+
+      @if (!editMode) {
+        <!-- ====== VIEW MODE ====== -->
+
+        <!-- Header: Category + AI Badge + Close -->
+        <div class="detail-header">
+          <div class="detail-header-left">
+            <div class="detail-category" [class]="getCategoryClass(selectedTask.category) + '-big'">
+              {{ getCategoryLabel(selectedTask.category) }}
+            </div>
+            @if (selectedTask.ai_generated) {
+              <div class="ai-generated-badge">
+                <img src="assets/icons/ai_sparkle_icon.png" alt="AI">
+                Ai-generated ticket
+              </div>
+            }
+          </div>
+          <button class="detail-close-btn" (click)="closeTaskDetails()">
+            <img class="close-icon-default" src="assets/icons/close_icon_blue.png" alt="Close">
+            <img class="close-icon-hover" src="assets/icons/close_icon_blue_hover.png" alt="Close">
+          </button>
+        </div>
+
+        <!-- Title -->
+        <h1 class="detail-title">{{ selectedTask.name }}</h1>
+
+        <!-- Description -->
+        <p class="detail-description">{{ selectedTask.description }}</p>
+
+        <!-- Creator -->
+        @if (selectedTask.creator) {
+          <div class="detail-row detail-creator-row">
+            <span class="detail-label">Creator:</span>
+            <div class="detail-creator-inline">
+              <div class="detail-creator-badge" [class.member]="selectedTask.creator.type === 'internal'"
+                [class.extern]="selectedTask.creator.type === 'external'">
+                <img [src]="selectedTask.creator.type === 'internal'
+                  ? 'assets/icons/creator_member_icon.png'
+                  : 'assets/icons/creator_extern_icon.png'" alt="">
+                {{ selectedTask.creator.type === 'internal' ? 'Member' : 'Extern' }}
+              </div>
+              <span class="detail-creator-name">{{ selectedTask.creator.name }}{{ isCreatorCurrentUser() ? ' (You)' : '' }}</span>
+            </div>
+            <div class="detail-creator-action">
+              @if (selectedTask.creator.type === 'internal') {
+                <a class="creator-link" (click)="navigateToCreatorProfile()">
+                  <img src="assets/icons/creator_profile_icon.png" alt="Profile">
+                  Profil
+                </a>
+              } @else {
+                <a class="creator-link" href="mailto:{{ selectedTask.creator.email }}">
+                  <img src="assets/icons/creator_email_icon.png" alt="Email">
+                  E-mail
+                </a>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Due Date -->
+        <div class="detail-row">
+          <span class="detail-label">Due date:</span>
+          <span class="detail-value">{{ formatDate(selectedTask.due_date) }}</span>
+        </div>
+
+        <!-- Priority -->
+        @if (selectedTask.prio) {
+          <div class="detail-row">
+            <span class="detail-label">Priority:</span>
+            <div class="detail-priority">
+              <span>{{ getDetailPriorityLabel(selectedTask.prio) }}</span>
+              <img [src]="getPriorityIcon(selectedTask.prio)" alt="Priority">
+            </div>
+          </div>
+        }
+
+        <!-- Assigned To -->
+        @if (getAssignees(selectedTask).length > 0) {
+          <div class="detail-section">
+            <span class="detail-label">Assigned To:</span>
+            <div class="detail-assignees">
+              @for (assignee of getAssignees(selectedTask); track assignee) {
+                <div class="detail-assignee-item">
+                  <div class="detail-assignee-avatar" [ngClass]="getBadgeColor(assignee)">
+                    {{ getInitials(assignee) }}
+                  </div>
+                  <span>{{ assignee }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Subtasks -->
+        @if (hasSubtasks(selectedTask)) {
+          <div class="detail-section">
+            <span class="detail-label">Subtasks:</span>
+            <div class="detail-subtasks">
+              @for (subtask of getSubtasks(selectedTask); track subtask.id) {
+                <div class="detail-subtask-item" (click)="toggleSubtask(subtask)">
+                  <label class="subtask-checkbox-container" (click)="$event.preventDefault()">
+                    <input type="checkbox" class="subtask-checkbox" [checked]="subtask.status === 1">
+                    <span class="custom-checkbox-subtask"></span>
+                  </label>
+                  <span class="subtask-text">{{ subtask.name }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Footer: Delete | Edit -->
+        <div class="detail-footer">
+          <div class="detail-footer-buttons">
+            <button class="detail-delete-btn" (click)="deleteTask()">
+              <img class="delete-icon-default" src="assets/icons/delete_icon_blue.png" alt="Delete">
+              <img class="delete-icon-hover" src="assets/icons/delete_icon_lightblue.png" alt="Delete">
+              Delete
+            </button>
+            <div class="detail-footer-separator"></div>
+            <button class="detail-edit-btn" (click)="enterEditMode()">
+              <img class="edit-icon-default" src="assets/icons/edit_icon_blue.png" alt="Edit">
+              <img class="edit-icon-hover" src="assets/icons/edit_icon_lightblue.png" alt="Edit">
+              Edit
+            </button>
+          </div>
+        </div>
+
+      } @else {
+        <!-- ====== EDIT MODE ====== -->
+        <form class="edit-task-form" (submit)="$event.preventDefault(); saveEdit()">
+          <!-- Close button -->
+          <div class="edit-header">
+            <button type="button" class="detail-close-btn" (click)="closeTaskDetails()">
+              <img class="close-icon-default" src="assets/icons/close_icon_blue.png" alt="Close">
+              <img class="close-icon-hover" src="assets/icons/close_icon_blue_hover.png" alt="Close">
+            </button>
+          </div>
+
+          <div class="edit-fields">
+            <!-- Title -->
+            <div class="edit-field">
+              <label><h3>Title<span class="edit-required">*</span></h3></label>
+              <input type="text" [(ngModel)]="editTitle" name="editTitle" placeholder="Enter a title"
+                (keydown)="handleKeyDown($event)" class="edit-input">
+            </div>
+
+            <!-- Description -->
+            <div class="edit-field">
+              <label><h3>Description</h3></label>
+              <textarea rows="4" [(ngModel)]="editDescription" name="editDescription"
+                placeholder="Enter a Description" (keydown)="handleKeyDown($event)" class="edit-textarea"></textarea>
+            </div>
+
+            <!-- Assigned To -->
+            <div class="edit-field">
+              <label><h3>Assigned to</h3></label>
+              <div class="edit-dropdown-content">
+                @if (!editContactDropdownOpen) {
+                  <button type="button" class="edit-dropdown-toggle" (click)="toggleEditContactDropdown($event)">
+                    <span>Select contacts to assign</span>
+                    <img src="assets/icons/arrow_drop_down_icon.png" alt="Open" class="edit-dropdown-arrow">
+                  </button>
+                } @else {
+                  <div class="edit-dropdown-search">
+                    <input type="text" [(ngModel)]="editContactSearchQuery" name="editContactSearch"
+                      (input)="filterEditContacts()" (keydown)="handleKeyDown($event)" class="edit-dropdown-input">
+                    <button type="button" (click)="toggleEditContactDropdown($event)">
+                      <img src="assets/icons/arrow_drop_down_up_icon.png" alt="Close" class="edit-dropdown-arrow">
+                    </button>
+                  </div>
+                }
+                @if (editContactDropdownOpen) {
+                  <div class="edit-dropdown-list">
+                    @for (contact of filteredContacts; track contact.id) {
+                      <div class="edit-dropdown-item" [class.selected]="isEditContactSelected(contact)"
+                        (click)="toggleEditContactSelection(contact)">
+                        <div class="edit-dropdown-item-left">
+                          <div class="detail-assignee-avatar" [ngClass]="getBadgeColor(contact.name)">
+                            {{ getInitials(contact.name) }}
+                          </div>
+                          <span>{{ contact.name }}</span>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+              <div class="edit-chosen-contacts">
+                @for (contact of editSelectedContacts; track contact.id) {
+                  <div class="detail-assignee-avatar edit-chosen-avatar" [ngClass]="getBadgeColor(contact.name)">
+                    {{ getInitials(contact.name) }}
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Due Date -->
+            <div class="edit-field">
+              <label><h3>Due date<span class="edit-required">*</span></h3></label>
+              <input type="date" [(ngModel)]="editDueDate" name="editDueDate" [min]="getTodayDate()" class="edit-input">
+            </div>
+
+            <!-- Priority -->
+            <div class="edit-field">
+              <label><h3>Prio</h3></label>
+              <div class="edit-priority-container">
+                <label class="edit-priority-btn" [class.urgent-active]="editPriority === 3">
+                  <input type="radio" name="editPrio" [value]="3" [(ngModel)]="editPriority">
+                  Urgent
+                  <img [src]="editPriority === 3 ? 'assets/icons/urgent_icon_white.png' : 'assets/icons/urgent_icon_red.png'" alt="Urgent">
+                </label>
+                <label class="edit-priority-btn" [class.medium-active]="editPriority === 2">
+                  <input type="radio" name="editPrio" [value]="2" [(ngModel)]="editPriority">
+                  Medium
+                  <img [src]="editPriority === 2 ? 'assets/icons/medium_icon_white.png' : 'assets/icons/medium_icon_orange.png'" alt="Medium">
+                </label>
+                <label class="edit-priority-btn" [class.low-active]="editPriority === 1">
+                  <input type="radio" name="editPrio" [value]="1" [(ngModel)]="editPriority">
+                  Low
+                  <img [src]="editPriority === 1 ? 'assets/icons/low_icon_white.png' : 'assets/icons/low_icon_green.png'" alt="Low">
+                </label>
+              </div>
+            </div>
+
+            <!-- Subtasks -->
+            <div class="edit-field">
+              <label><h3>Subtasks</h3></label>
+              <div class="edit-subtask-input-container">
+                <input type="text" [(ngModel)]="editNewSubtaskText" name="editNewSubtask"
+                  placeholder="Add new subtask" (click)="activateEditSubtaskInput()"
+                  (keydown)="handleEditSubtaskKeydown($event)" class="edit-input">
+                @if (!editSubtaskInputActive) {
+                  <button type="button" class="edit-subtask-add-btn" (click)="activateEditSubtaskInput()">
+                    <img src="assets/icons/add_icon_blue.png" alt="+">
+                  </button>
+                } @else {
+                  <div class="edit-subtask-actions">
+                    <button type="button" (click)="closeEditSubtaskInput()">
+                      <img src="assets/icons/close_icon_subtask_blue.png" alt="X">
+                    </button>
+                    <div class="edit-subtask-separator"></div>
+                    <button type="button" (click)="addEditSubtask()">
+                      <img src="assets/icons/hook_icon_subtask_blue.png" alt="OK">
+                    </button>
+                  </div>
+                }
+              </div>
+              <div class="edit-subtasks-list">
+                @for (subtask of editSubtasks; track subtask.id) {
+                  <div class="edit-subtask-item">
+                    <span>&bull; {{ subtask.name }}</span>
+                    <button type="button" class="edit-subtask-delete" (click)="deleteEditSubtask(subtask.id)">
+                      <img src="assets/icons/delete_icon_subtask_blue.png" alt="Delete">
+                    </button>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Ok Button -->
+          <div class="edit-footer">
+            <button type="submit" class="edit-ok-btn">
+              Ok
+              <img src="assets/icons/hook_icon_white.png" alt="Ok">
+            </button>
+          </div>
+        </form>
+      }
+
+    </div>
+  </div>
+}

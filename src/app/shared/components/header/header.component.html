@@ -1,0 +1,35 @@
+<header class="header">
+  <div class="header-content">
+    <h3 class="header-title">Kanban Project Management Tool</h3>
+
+    <div class="header-actions">
+      <a routerLink="/help" class="help-button">
+        <img src="assets/icons/help_icon.png" alt="Help" />
+      </a>
+
+      <div class="profile-container">
+        <button
+          class="profile-button"
+          [class.open]="menuOpen()"
+          (click)="toggleMenu()"
+        >
+          {{ currentUser()?.initials || 'G' }}
+        </button>
+
+        @if (menuOpen()) {
+          <div class="menu-overlay" (click)="closeMenu()"></div>
+          <div class="profile-menu">
+            <a routerLink="/help" class="menu-item mobile-only" (click)="closeMenu()">Help</a>
+            <a routerLink="/legal-notice" class="menu-item" (click)="closeMenu()">Legal Notice</a>
+            <a routerLink="/privacy-policy" class="menu-item" (click)="closeMenu()">Privacy Policy</a>
+            <button class="menu-item" (click)="logout()">Log out</button>
+          </div>
+        }
+      </div>
+    </div>
+
+    <a routerLink="/summary" class="header-logo-mobile">
+      <img src="assets/icons/header_logo_icon_mobile.png" alt="Join Logo" />
+    </a>
+  </div>
+</header>

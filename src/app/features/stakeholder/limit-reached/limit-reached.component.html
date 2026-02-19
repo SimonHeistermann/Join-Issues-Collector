@@ -1,0 +1,78 @@
+<div class="limit-page">
+  <!-- Header -->
+  <header class="limit-header">
+    <div class="header-logo-row">
+      <a routerLink="/welcome" class="logo-link">
+        <img src="assets/icons/logo_blue.png" alt="Join" class="logo" />
+      </a>
+    </div>
+
+    <div class="header-nav-row">
+      <button class="back-button" (click)="goBack()">
+        <img src="assets/icons/arrow_left_blue.png" alt="Back" />
+      </button>
+
+      <div class="usage-display limit-reached">
+        <span class="usage-count">10</span>
+        <span class="usage-text">of <strong>10</strong> requests used today</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="limit-content">
+    <!-- Desktop Title -->
+    <h1 class="main-title desktop-only">Welcome</h1>
+
+    <!-- Mobile Title Row -->
+    <div class="mobile-title-row">
+      <div class="mobile-title-left">
+        <h1 class="main-title">Welcome</h1>
+        <div class="mobile-usage-display limit-reached">
+          <span class="usage-count">10</span>
+          <span class="usage-text">of <strong>10</strong> requests used</span>
+        </div>
+      </div>
+      <button class="mobile-back-button" (click)="goBack()">
+        <img src="assets/icons/arrow_left_blue.png" alt="Back" />
+      </button>
+    </div>
+
+    <!-- Alert Banner - mobile only (outside content-wrapper for ordering) -->
+    <div class="alert-banner mobile-only">
+      The daily 10-request limit has been reached!
+    </div>
+
+    <div class="content-wrapper">
+      <div class="text-column">
+        <!-- Alert Banner - desktop only -->
+        <div class="alert-banner desktop-only">
+          The daily 10-request limit has been reached!
+        </div>
+
+        <div class="info-text">
+          <p>
+            Need more? No worries — you can still send emails, but
+            our team will review them manually instead of using AI
+            to create tickets.
+          </p>
+        </div>
+
+        <button class="send-email-btn" (click)="createEmailRequest()">
+          Send an email
+          <img src="assets/icons/check_icon_white.png" alt="" class="btn-icon" />
+        </button>
+      </div>
+
+      <div class="illustration-column">
+        <img src="assets/img/limit_reached_image.png" alt="Kanban Board Illustration" />
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="limit-footer">
+    <a routerLink="/privacy-policy">Privacy Policy</a>
+    <a routerLink="/legal-notice">Legal notice</a>
+  </footer>
+</div>

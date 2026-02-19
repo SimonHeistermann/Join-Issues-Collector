@@ -1,0 +1,282 @@
+@if (!overlayMode) {
+  <app-sidebar />
+  <app-header />
+}
+<main class="main-content" [class.overlay-content]="overlayMode">
+  @if (overlayMode) {
+    <div class="overlay-header">
+      <h1>{{ isEditMode ? 'Edit Task' : 'Add Task' }}</h1>
+      <button type="button" class="overlay-close-btn" (click)="overlayClose.emit()">
+        <img class="close-icon-default" src="assets/icons/close_icon_blue.png" alt="Close">
+        <img class="close-icon-hover" src="assets/icons/close_icon_blue_hover.png" alt="Close">
+      </button>
+    </div>
+  } @else {
+    <h1>Add Task</h1>
+  }
+  <form class="add-task-form" (submit)="handleSubmit($event)">
+    <div class="input-boxes">
+      <!-- LEFT COLUMN -->
+      <div class="add-task-left">
+        <!-- Title -->
+        <div class="input-container">
+          <label><h3>Title<span class="red-star">*</span></h3></label>
+          <div class="input-box">
+            <input type="text" [(ngModel)]="title" name="title" placeholder="Enter a title"
+              (keydown)="handleKeyDown($event)" [class.error-input]="titleError">
+            <div class="error-message">{{ titleError }}</div>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="input-container">
+          <label><h3>Description</h3></label>
+          <div class="input-box">
+            <textarea rows="5" [(ngModel)]="description" name="description"
+              placeholder="Enter a Description" (keydown)="handleKeyDown($event)"></textarea>
+          </div>
+        </div>
+
+        <!-- Assigned To -->
+        <div class="dropdown-container">
+          <label><h3>Assigned to</h3></label>
+          <div class="dropdown-content">
+            @if (!contactDropdownOpen) {
+              <button type="button" class="dropdown-toggle" (click)="toggleContactDropdown($event)">
+                <h3>Select contacts to assign</h3>
+                <span class="dropdown-arrow-icon-container">
+                  <img class="dropdown-arrow-icon-default" src="assets/icons/arrow_drop_down_icon.png" alt="Open">
+                  <img class="dropdown-arrow-icon-hover" src="assets/icons/arrow_drop_down_icon_hover.png" alt="Open">
+                </span>
+              </button>
+            } @else {
+              <div class="dropdown-search-container">
+                <input type="text" class="dropdown-search-input" [(ngModel)]="contactSearchQuery"
+                  name="contactSearch" placeholder="" (input)="filterContacts()" (keydown)="handleKeyDown($event)">
+                <button type="button" class="close-dropdown-button" (click)="toggleContactDropdown($event)">
+                  <img class="dropdown-arrow-up-icon-default" src="assets/icons/arrow_drop_down_up_icon.png" alt="Close">
+                  <img class="dropdown-arrow-up-icon-hover" src="assets/icons/arrow_drop_down_up_icon_hover.png" alt="Close">
+                </button>
+              </div>
+            }
+            <div class="dropdown-list-wrapper" [class.open]="contactDropdownOpen">
+              @if (contactDropdownOpen) {
+                <div class="overlay-dropdown" (click)="closeContactDropdown()"></div>
+              }
+              <ul class="dropdown-list">
+                @for (contact of filteredContacts; track contact.id) {
+                  <li class="dropdown-item" [class.dropdown-item-checked]="isContactSelected(contact)"
+                    (click)="toggleContactSelection(contact)">
+                    <div class="dropdown-item-left">
+                      <div class="dropdown-avatar" [ngClass]="getBadgeColor(contact.name)">
+                        {{ getInitials(contact.name) }}
+                      </div>
+                      <span>{{ contact.name }}{{ isCurrentUser(contact) ? ' (You)' : '' }}</span>
+                    </div>
+                    <div class="contact-checkbox-container">
+                      @if (isContactSelected(contact)) {
+                        <span class="custom-checkbox-white"></span>
+                      } @else {
+                        <span class="custom-checkbox"></span>
+                      }
+                    </div>
+                  </li>
+                }
+              </ul>
+            </div>
+          </div>
+          <div class="chosen-contacts-container">
+            @for (contact of selectedContacts; track contact.id) {
+              <div class="dropdown-avatar chosen-avatar" [ngClass]="getBadgeColor(contact.name)">
+                {{ getInitials(contact.name) }}
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- SEPARATOR -->
+      <div class="add-task-separator"></div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="add-task-right">
+        <!-- Due Date -->
+        <div class="date-box">
+          <h3>Due date<span class="red-star">*</span></h3>
+          <div class="date-container" [class.error-input]="dateError">
+            <input class="date-input" type="date" [(ngModel)]="dueDate" name="dueDate"
+              [min]="getTodayDate()">
+          </div>
+          <div class="error-message">{{ dateError }}</div>
+        </div>
+
+        <!-- Priority -->
+        <div class="input-container">
+          <h3>Prio</h3>
+          <div class="radio-container">
+            <label class="radio radio-urgent">
+              <input type="radio" name="prio" [value]="3" [(ngModel)]="priority">
+              <h3>Urgent</h3>
+              <img class="urgent-icon-red" src="assets/icons/urgent_icon_red.png" alt="Urgent">
+              <img class="urgent-icon-white" src="assets/icons/urgent_icon_white.png" alt="Urgent">
+            </label>
+            <label class="radio radio-medium">
+              <input type="radio" name="prio" [value]="2" [(ngModel)]="priority">
+              <h3>Medium</h3>
+              <img class="medium-icon-orange" src="assets/icons/medium_icon_orange.png" alt="Medium">
+              <img class="medium-icon-white" src="assets/icons/medium_icon_white.png" alt="Medium">
+            </label>
+            <label class="radio radio-low">
+              <input type="radio" name="prio" [value]="1" [(ngModel)]="priority">
+              <h3>Low</h3>
+              <img class="low-icon-green" src="assets/icons/low_icon_green.png" alt="Low">
+              <img class="low-icon-white" src="assets/icons/low_icon_white.png" alt="Low">
+            </label>
+          </div>
+        </div>
+
+        <!-- Category -->
+        <div class="dropdown-container">
+          <h3>Category<span class="red-star">*</span></h3>
+          <div class="dropdown-content">
+            @if (!categoryDropdownOpen) {
+              <button type="button" class="dropdown-toggle" [class.error-input]="categoryError"
+                (click)="toggleCategoryDropdown($event)">
+                <h3 [class.selected-category]="category !== ''">{{ getCategoryLabel() }}</h3>
+                <span class="dropdown-arrow-icon-container">
+                  <img class="dropdown-arrow-icon-default" src="assets/icons/arrow_drop_down_icon.png" alt="Open">
+                  <img class="dropdown-arrow-icon-hover" src="assets/icons/arrow_drop_down_icon_hover.png" alt="Open">
+                </span>
+              </button>
+            } @else {
+              <div class="dropdown-search-container">
+                <h3>Select task category</h3>
+                <button type="button" class="close-dropdown-button" (click)="toggleCategoryDropdown($event)">
+                  <img class="dropdown-arrow-up-icon-default" src="assets/icons/arrow_drop_down_up_icon.png" alt="Close">
+                  <img class="dropdown-arrow-up-icon-hover" src="assets/icons/arrow_drop_down_up_icon_hover.png" alt="Close">
+                </button>
+              </div>
+            }
+            <div class="dropdown-list-wrapper category-dropdown" [class.open]="categoryDropdownOpen">
+              @if (categoryDropdownOpen) {
+                <div class="overlay-dropdown" (click)="closeCategoryDropdown()"></div>
+              }
+              <ul class="dropdown-list">
+                <li class="dropdown-item-category" (click)="selectCategory('tt')">
+                  <span>Technical Task</span>
+                </li>
+                <li class="dropdown-item-category" (click)="selectCategory('us')">
+                  <span>User Story</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="error-message">{{ categoryError }}</div>
+        </div>
+
+        <!-- Subtasks -->
+        <div class="subtasks-container">
+          <h3>Subtasks</h3>
+          <div class="date-container subtask-input-container">
+            <input class="date-input" type="text" [(ngModel)]="newSubtaskText" name="newSubtask"
+              placeholder="Add new subtask" (click)="activateSubtaskInput()"
+              (keydown)="handleSubtaskKeydown($event)">
+            <label class="add-subtask-label">
+              @if (!subtaskInputActive) {
+                <button type="button" class="add-subtask-box" (click)="activateSubtaskInput()">
+                  <img class="add-subtask-icon" src="assets/icons/add_icon_blue.png" alt="+">
+                  <img class="add-subtask-icon-hover" src="assets/icons/add_icon_blue_hover.png" alt="+">
+                </button>
+              } @else {
+                <div class="active-add-subtask-box">
+                  <button type="button" class="close-subtask-box" (click)="closeSubtaskInput()">
+                    <img class="close-subtask-icon" src="assets/icons/close_icon_subtask_blue.png" alt="X">
+                    <img class="close-subtask-icon-hover" src="assets/icons/close_icon_subtask_blue_hover.png" alt="X">
+                  </button>
+                  <div class="add-subtask-separator"></div>
+                  <button type="button" class="check-subtask-box" (click)="addSubtask()">
+                    <img class="check-subtask-icon" src="assets/icons/hook_icon_subtask_blue.png" alt="OK">
+                    <img class="check-subtask-icon-hover" src="assets/icons/hook_icon_subtask_blue_hover.png" alt="OK">
+                  </button>
+                </div>
+              }
+            </label>
+          </div>
+          <div class="added-subtasks-container">
+            @for (subtask of subtasks; track subtask.id) {
+              @if (editingSubtaskId === subtask.id) {
+                <div class="subtask-item-edited">
+                  <input class="subtask-edit-input" type="text" [(ngModel)]="editingSubtaskText"
+                    [ngModelOptions]="{standalone: true}" (keydown)="handleEditSubtaskKeydown($event, subtask)">
+                  <label>
+                    <button type="button" class="delete-subtask-box-hover" (click)="deleteSubtask(subtask.id)">
+                      <img class="delete-subtask-icon" src="assets/icons/delete_icon_subtask_blue.png" alt="Delete">
+                      <img class="delete-subtask-icon-hover" src="assets/icons/delete_icon_subtask_blue_hover.png" alt="Delete">
+                    </button>
+                    <div class="add-subtask-separator"></div>
+                    <button type="button" class="check-subtask-box-hover" (click)="saveEditSubtask(subtask)">
+                      <img class="check-subtask-icon" src="assets/icons/hook_icon_subtask_blue.png" alt="OK">
+                      <img class="check-subtask-icon-hover" src="assets/icons/hook_icon_subtask_blue_hover.png" alt="OK">
+                    </button>
+                  </label>
+                </div>
+              } @else {
+                <div class="subtask-item">
+                  <div class="subtask-item-left">
+                    <span>&bull;</span>
+                    <span>{{ subtask.name }}</span>
+                  </div>
+                  <div class="edit-and-delete-subtask-box">
+                    <button type="button" class="edit-subtask-box-hover" (click)="startEditSubtask(subtask)">
+                      <img class="edit-subtask-icon" src="assets/icons/edit_icon_subtask_blue.png" alt="Edit">
+                      <img class="edit-subtask-icon-hover" src="assets/icons/edit_icon_subtask_blue_hover.png" alt="Edit">
+                    </button>
+                    <div class="add-subtask-separator"></div>
+                    <button type="button" class="delete-subtask-box-hover" (click)="deleteSubtask(subtask.id)">
+                      <img class="delete-subtask-icon" src="assets/icons/delete_icon_subtask_blue.png" alt="Delete">
+                      <img class="delete-subtask-icon-hover" src="assets/icons/delete_icon_subtask_blue_hover.png" alt="Delete">
+                    </button>
+                  </div>
+                </div>
+              }
+            }
+          </div>
+        </div>
+
+        <div class="is-required-text-mobile">
+          <span class="red-star">*</span>
+          This field is required
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="text-and-buttons">
+      <div class="is-required-text">
+        <span class="red-star">*</span>
+        This field is required
+      </div>
+      <div class="add-task-buttonbox">
+        <button type="button" class="clear-button" (click)="clearForm()">
+          Clear
+          <img class="clear-button-img" src="assets/icons/cancel_icon_blue.png" alt="Clear">
+          <img class="clear-button-img-hover" src="assets/icons/cancel_icon_lightblue.png" alt="Clear">
+        </button>
+        <button type="submit" class="create-task-button">
+          {{ isEditMode ? 'Update Task' : 'Create Task' }}
+          <img src="assets/icons/hook_icon_white.png" alt="Create">
+        </button>
+      </div>
+    </div>
+  </form>
+</main>
+
+<!-- Success Notification (standalone mode only) -->
+@if (showNotification && !overlayMode) {
+  <div class="overlay-task-added">
+    <div class="task-added-notification" [class.active]="showNotification">
+      <h3>Task added to board</h3>
+      <img src="assets/icons/board_icon_white.png" alt="Board">
+    </div>
+  </div>
+}

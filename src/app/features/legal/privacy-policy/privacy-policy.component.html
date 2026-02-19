@@ -1,0 +1,119 @@
+@if (isLoggedIn()) {
+  <app-sidebar />
+  <app-header />
+  <main class="main-content">
+    <div class="page-headline">
+      <h1 class="page-title">Privacy Policy</h1>
+      <button class="back-button" (click)="goBack()">
+        <img class="thin-back-button" src="assets/icons/arrow_left_icon_light_blue_thin.png" alt="Back" />
+        <img class="thick-back-button" src="assets/icons/arrow_left_icon_light_blue_thick.png" alt="Back" />
+      </button>
+    </div>
+    <ng-container *ngTemplateOutlet="privacyContent" />
+  </main>
+} @else {
+  <div class="legal-page">
+    <header class="legal-header">
+      <a class="back-link" (click)="goBack()">
+        <img src="assets/icons/arrow_left.png" alt="Back" />
+      </a>
+    </header>
+    <main class="legal-content-standalone">
+      <h1 class="page-title">Privacy Policy</h1>
+      <ng-container *ngTemplateOutlet="privacyContent" />
+    </main>
+  </div>
+}
+
+<ng-template #privacyContent>
+  <section class="legal-section">
+    <h2 class="legal-subtitle">Introduction and Overview</h2>
+    <p>We have prepared this privacy policy (version 21.01.2025) to inform you in accordance with the requirements of the
+       <a href="https://eur-lex.europa.eu/legal-content/DE/TXT/HTML/?uri=CELEX:32016R0679" target="_blank" rel="noopener">
+         General Data Protection Regulation (EU) 2016/679
+       </a>
+       and applicable national laws.</p>
+    <p>This document details which personal data (hereinafter referred to as "data") we, as the data controller,
+       and the processors commissioned by us (e.g., service providers) process, how we will process it in the future,
+       and what lawful options you have.</p>
+  </section>
+
+  <section class="legal-section">
+    <h2 class="legal-subtitle">Area of Application</h2>
+    <p>This privacy policy applies to all personal data processed in our company and by commissioned processors. This includes:</p>
+    <ul class="legal-list">
+      <li>All online presences (websites, online shops) operated by us</li>
+      <li>Social media appearances and email communication</li>
+      <li>Mobile apps for smartphones and other devices</li>
+    </ul>
+    <p>If we engage with you outside of these channels, we will inform you separately if necessary.</p>
+  </section>
+
+  <section class="legal-section">
+    <h2 class="legal-subtitle">Legal Bases</h2>
+    <p>We process your data only when at least one of the following conditions applies:</p>
+    <ol class="legal-list">
+      <li><strong>Consent</strong> (Article 6(1)(a) GDPR): You have given your consent for data processing for a specific purpose.</li>
+      <li><strong>Contract</strong> (Article 6(1)(b) GDPR): We process your data to fulfill a contract or pre-contractual obligations.</li>
+      <li><strong>Legal Obligation</strong> (Article 6(1)(c) GDPR): We process your data when required by law.</li>
+      <li><strong>Legitimate Interests</strong> (Article 6(1)(f) GDPR): If our legitimate interests do not outweigh your fundamental rights, we may process your data.</li>
+    </ol>
+    <p>Additionally, national laws such as the Datenschutzgesetz (DSG) in Austria and the Bundesdatenschutzgesetz (BDSG) in Germany apply.</p>
+  </section>
+
+  <section class="legal-section">
+    <h2 class="legal-subtitle">Contact Details of the Responsible Party</h2>
+    <p><strong>Responsible Party:</strong> Simon Heistermann<br>
+       46325 Borken<br>
+       Email: <a href="mailto:business@heistermann-solutions.de">business&#64;heistermann-solutions.de</a></p>
+  </section>
+
+  <section class="legal-section">
+    <h2 class="legal-subtitle">Storage Duration</h2>
+    <p>Personal data is only stored as long as necessary to provide our services and products.
+       If you request deletion or revoke consent, we delete data promptly,
+       provided no legal obligation requires its retention.</p>
+  </section>
+
+  <section class="legal-section">
+    <h2 class="legal-subtitle">Data Processing and Third Parties</h2>
+    <p>We work with third-party service providers for hosting, analytics, and customer management.
+       These providers process data on our behalf and comply with GDPR requirements.</p>
+    <p>If data is transferred outside the EU, we ensure appropriate safeguards such as Standard Contractual Clauses (SCCs).</p>
+  </section>
+
+  <section class="legal-section">
+    <h2 class="legal-subtitle">Cookies & Tracking</h2>
+    <p>We use cookies and tracking technologies to improve our services.
+       You can adjust your cookie preferences in your browser settings.</p>
+  </section>
+
+  <section class="legal-section">
+    <h2 class="legal-subtitle">Rights under the GDPR</h2>
+    <ul class="legal-list">
+      <li>Right to information (Art. 15 GDPR)</li>
+      <li>Right to rectification (Art. 16 GDPR)</li>
+      <li>Right to erasure (Art. 17 GDPR)</li>
+      <li>Right to restriction of processing (Art. 18 GDPR)</li>
+      <li>Right to data portability (Art. 20 GDPR)</li>
+      <li>Right to object (Art. 21 GDPR)</li>
+      <li>Right to lodge a complaint (Art. 77 GDPR)</li>
+    </ul>
+    <p>If you believe your data processing violates GDPR, you can file a complaint with the Datenschutzbehörde in Austria
+       (<a href="https://www.dsb.gv.at" target="_blank">dsb.gv.at</a>) or the relevant data protection authority in Germany.</p>
+  </section>
+
+  <section class="legal-section">
+    <h2 class="legal-subtitle">Supervisory Authority</h2>
+    <p><strong>Data Protection Authority:</strong><br>
+       Nordrhein-Westfalen Datenschutzbehörde<br>
+       Address: Kavalleriestraße 2-4, 40213 Düsseldorf<br>
+       Email: <a href="mailto:poststelle@ldi.nrw.de">poststelle&#64;ldi.nrw.de</a><br>
+       Website: <a href="https://www.ldi.nrw.de/" target="_blank">www.ldi.nrw.de</a></p>
+  </section>
+
+  <section class="legal-section">
+    <h2 class="legal-subtitle">Copyright & Source</h2>
+    <p>All texts are copyright protected. Source: Privacy Policy Generator by AdSimple.</p>
+  </section>
+</ng-template>

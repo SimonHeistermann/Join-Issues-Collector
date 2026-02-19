@@ -1,0 +1,86 @@
+# =============================================
+# Join Issue Collector - Apache Configuration
+# =============================================
+
+# ---------------------------
+# 1. SPA Routing (Angular)
+# ---------------------------
+# Redirect all requests to index.html so Angular handles routing.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Don't rewrite files or directories that actually exist
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Rewrite everything else to index.html
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# ---------------------------
+# 2. CORS Headers for n8n
+# ---------------------------
+# Allow the Angular app to call n8n webhooks on Render.com
+<IfModule mod_headers.c>
+  # Allow requests to external APIs (n8n on Render)
+  Header set Access-Control-Allow-Origin "*"
+  Header set Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+  Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+
+  # Security headers
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set X-XSS-Protection "1; mode=block"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# ---------------------------
+# 3. Gzip Compression
+# ---------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html
+  AddOutputFilterByType DEFLATE text/css
+  AddOutputFilterByType DEFLATE text/javascript
+  AddOutputFilterByType DEFLATE application/javascript
+  AddOutputFilterByType DEFLATE application/json
+  AddOutputFilterByType DEFLATE image/svg+xml
+  AddOutputFilterByType DEFLATE application/font-woff2
+</IfModule>
+
+# ---------------------------
+# 4. Browser Caching
+# ---------------------------
+<IfModule mod_expires.c>
+  ExpiresActive On
+
+  # HTML - no cache (Angular injects hashed filenames)
+  ExpiresByType text/html "access plus 0 seconds"
+
+  # CSS & JS - long cache (filenames are hashed by Angular build)
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+
+  # Fonts
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType application/font-woff2 "access plus 1 year"
+
+  # Images
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/svg+xml "access plus 1 month"
+  ExpiresByType image/x-icon "access plus 1 month"
+</IfModule>
+
+# ---------------------------
+# 5. MIME Types
+# ---------------------------
+<IfModule mod_mime.c>
+  AddType application/javascript .js
+  AddType text/css .css
+  AddType font/woff2 .woff2
+  AddType image/svg+xml .svg
+</IfModule>
+
+# Prevent directory listing
+Options -Indexes

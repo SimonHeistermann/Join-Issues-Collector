@@ -1,0 +1,72 @@
+<!-- Animation overlay + logo (always in DOM, controlled via CSS classes) -->
+<div class="animation-overlay"
+     [class.fade-out]="overlayFading()"
+     [class.done]="animationDone()"></div>
+<div class="animation-logo"
+     [class.move-to-corner]="logoMoving()"
+     [class.done]="animationDone()">
+  <img src="assets/icons/logo_big.png" alt="Join" />
+</div>
+
+<div class="welcome-page">
+  <!-- Desktop Header (logo only, positioned absolute) -->
+  <header class="desktop-header">
+    <a routerLink="/welcome" class="header-logo">
+      <img src="assets/icons/logo_sidebar.png" alt="Join" />
+    </a>
+  </header>
+
+  <!-- Mobile Header -->
+  <header class="mobile-header">
+    <div class="logo">
+      <img src="assets/icons/logo_sidebar.png" alt="Join" />
+    </div>
+    <div class="signup-link">
+      <span>Not a Join user?</span>
+      <a routerLink="/register">Sign up</a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="welcome-main">
+    <!-- Main Card -->
+    <div class="welcome-card">
+      <h1>Welcome</h1>
+      <div class="separator"></div>
+
+      <p class="welcome-text">
+        Pick the option that suits your role:
+        create a request as a stakeholder or log in if
+        you're part of the team.
+      </p>
+
+      <div class="options-container">
+        <div class="option">
+          <div class="option-header">
+            <img src="assets/icons/stakeholder_icon.png" alt="" class="option-icon" />
+            <span>Are you a stakeholder?</span>
+          </div>
+          <button class="btn-primary" (click)="goToStakeholder()">
+            Create request
+          </button>
+        </div>
+
+        <div class="option">
+          <div class="option-header">
+            <img src="assets/icons/team_icon.png" alt="" class="option-icon" />
+            <span>Are you a team member?</span>
+          </div>
+          <button class="btn-secondary" (click)="goToLogin()">
+            Member log in
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="welcome-footer">
+    <a routerLink="/privacy-policy">Privacy Policy</a>
+    <a routerLink="/legal-notice">Legal Notice</a>
+  </footer>
+</div>

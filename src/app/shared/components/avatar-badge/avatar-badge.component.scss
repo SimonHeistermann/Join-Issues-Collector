@@ -1,0 +1,13 @@
+@use '../../../styles/variables' as *;
+
+.avatar-badge {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: $font-weight-regular;
+  color: $color-text-white;
+  border: 1px solid $color-background-card;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}

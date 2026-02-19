@@ -1,0 +1,553 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.main-content {
+  @include page-main-content;
+
+  & {
+    gap: 32px;
+    width: calc(100% - #{$sidebar-width});
+    max-width: calc(#{$max-width} - #{$sidebar-width});
+    overflow-x: hidden;
+  }
+
+  @include mobile {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+// ===========================================
+// HEADLINE
+// ===========================================
+
+.summary-headline {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+}
+
+.headline-separator {
+  background-color: $color-primary-light;
+  height: 59px;
+  width: 3px;
+  border-radius: 3px;
+}
+
+.headline-separator-mobile {
+  display: none;
+}
+
+// ===========================================
+// CONTENT LAYOUT
+// ===========================================
+
+.summary-content {
+  display: flex;
+  gap: 120px;
+  margin-top: 32px;
+}
+
+.keymetrics-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+// ===========================================
+// ROW 1: To-do + Done
+// ===========================================
+
+.firstrow-keymetrics {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.firstrow-behindbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 186px;
+  width: 282px;
+}
+
+.keymetrics-box {
+  background-color: white;
+  border-radius: 30px;
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
+  transition: all 125ms ease-in-out;
+
+  &:hover {
+    transform: translateY(-5px);
+  }
+}
+
+.keymetrics-todo {
+  height: 168px;
+  width: 264px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $color-primary;
+    height: 186px;
+    width: 282px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    color: white;
+
+    .keymetrics-text { color: white; }
+    .todo-icon { background-color: white; }
+    .white-todoicon { display: none; }
+    .blue-todoicon { display: block; }
+  }
+}
+
+.todo-icon, .done-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #2B3647;
+  border-radius: 50%;
+  height: 69px;
+  width: 69px;
+}
+
+.blue-todoicon, .blue-doneicon {
+  display: none;
+}
+
+.todo-textbox, .done-textbox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.keymetrics-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 64px;
+  font-weight: 600;
+}
+
+.keymetrics-text {
+  font-size: 20px;
+  font-weight: 400;
+  color: $color-text-primary;
+}
+
+.keymetrics-done {
+  height: 168px;
+  width: 264px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $color-primary;
+    height: 186px;
+    width: 282px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    color: white;
+
+    .keymetrics-text { color: white; }
+    .done-icon { background-color: white; }
+    .white-doneicon { display: none; }
+    .blue-doneicon { display: block; }
+  }
+}
+
+// ===========================================
+// ROW 2: Urgent + Email Requests
+// ===========================================
+
+.secondrow-keymetrics {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.secondrow-behindbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 186px;
+}
+
+.secondrow-urgent-box {
+  width: 376px;
+}
+
+.secondrow-email-box {
+  width: 188px;
+}
+
+.keymetrics-urgent {
+  height: 168px;
+  width: 360px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 0 24px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $color-primary;
+    height: 186px;
+    width: 376px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    color: white;
+
+    .keymetrics-text { color: white; }
+    .urgent-date { color: white; }
+  }
+}
+
+.keymetrics-email {
+  height: 168px;
+  width: 172px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $color-primary;
+    height: 186px;
+    width: 188px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    color: white;
+
+    .keymetrics-text { color: white; }
+    .email-request-number {
+      background: white;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+}
+
+.email-request-number {
+  background: linear-gradient(135deg, #8933FC, #29ABE2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.urgent-leftbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.urgent-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #FF3D00;
+  border-radius: 50%;
+  height: 69px;
+  width: 69px;
+}
+
+.urgent-textbox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.urgent-separator {
+  height: 102px;
+  background-color: $color-border;
+  width: 2px;
+  border-radius: 2px;
+}
+
+.urgent-textboxright {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.urgent-date {
+  color: $color-text-primary;
+  font-size: 21px;
+  font-weight: 700;
+}
+
+// ===========================================
+// ROW 3: Small boxes
+// ===========================================
+
+.thirdrow-keymetrics {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.thirdrow-behindbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 186px;
+  width: 186px;
+}
+
+.keymetrics-lastrow {
+  height: 168px;
+  width: 168px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $color-primary;
+    height: 186px;
+    width: 186px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    color: white;
+
+    .keymetrics-number { color: white; }
+    .keymetrics-textthirdrow { color: white; }
+  }
+}
+
+.keymetrics-textthirdrow {
+  font-size: 16px;
+  font-weight: 400;
+  color: $color-text-primary;
+  margin-inline: 8px;
+  text-align: center;
+  max-width: 158px;
+  word-break: break-word;
+}
+
+
+// ===========================================
+// GREETING
+// ===========================================
+
+.greet-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.greeting {
+  font-size: 47px;
+  font-weight: 500;
+  color: $color-text-primary;
+}
+
+.greeting-name {
+  color: $color-primary-light;
+  font-size: 64px;
+  font-weight: 700;
+}
+
+// ===========================================
+// TABLET / INTERMEDIATE
+// ===========================================
+
+@media (max-width: $breakpoint-desktop) {
+  .summary-headline {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .headline-separator {
+    display: none;
+  }
+
+  .headline-separator-mobile {
+    display: block;
+    background-color: $color-primary-light;
+    height: 3px;
+    width: 80px;
+    border-radius: 3px;
+  }
+
+  .summary-content {
+    flex-direction: column-reverse;
+    gap: 48px;
+  }
+
+  .greet-box {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 16px;
+  }
+
+  .greeting {
+    font-size: 36px;
+  }
+
+  .greeting-name {
+    font-size: 48px;
+  }
+}
+
+// ===========================================
+// MOBILE
+// ===========================================
+
+@include mobile {
+  .summary-content {
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .greet-box {
+    display: none;
+  }
+
+  .greeting {
+    font-size: 32px;
+  }
+
+  .greeting-name {
+    font-size: 36px;
+  }
+
+  .firstrow-keymetrics {
+    flex-direction: column;
+  }
+
+  .firstrow-behindbox {
+    width: 100%;
+    height: auto;
+  }
+
+  .keymetrics-todo,
+  .keymetrics-done {
+    width: 100%;
+    height: auto;
+    min-height: 120px;
+  }
+
+  .secondrow-keymetrics {
+    flex-direction: column;
+  }
+
+  .secondrow-behindbox {
+    width: 100%;
+    height: auto;
+  }
+
+  .secondrow-urgent-box,
+  .secondrow-email-box {
+    width: 100%;
+  }
+
+  .keymetrics-urgent {
+    width: 100%;
+    height: auto;
+    min-height: 120px;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+
+    &:hover {
+      width: 100%;
+    }
+  }
+
+  .keymetrics-email {
+    width: 100%;
+    height: auto;
+    min-height: 100px;
+
+    &:hover {
+      width: 100%;
+    }
+  }
+
+  .urgent-separator {
+    height: 2px;
+    width: 80px;
+  }
+
+  .thirdrow-keymetrics {
+    flex-wrap: wrap;
+  }
+
+  .thirdrow-behindbox {
+    width: calc(50% - 4px);
+    height: auto;
+  }
+
+  .keymetrics-lastrow {
+    width: 100%;
+    height: auto;
+    min-height: 100px;
+  }
+
+  .keymetrics-number {
+    font-size: 48px;
+  }
+}
+
+// ===========================================
+// MOBILE GREETING OVERLAY
+// ===========================================
+
+.greet-overlay-mobile {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100vh - 80px);
+  background-color: $color-background;
+  z-index: $z-index-overlay;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transition: opacity 125ms ease-out;
+
+  &.deactive {
+    opacity: 0;
+  }
+}
+
+.greet-box-mobile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 125ms ease-in;
+
+  &.active {
+    opacity: 1;
+  }
+
+  .greeting {
+    font-size: 36px;
+  }
+
+  .greeting-name {
+    font-size: 47px;
+    text-align: center;
+    color: $color-primary-light;
+    font-weight: 700;
+  }
+}

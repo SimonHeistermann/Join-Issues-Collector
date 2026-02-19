@@ -1,0 +1,179 @@
+@use 'variables' as *;
+
+// ===========================================
+// KEYFRAME ANIMATIONS
+// ===========================================
+
+// Shake animation for error states
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-5px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(5px);
+  }
+}
+
+// Fade in animation
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// Fade out animation
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+// Slide in from right
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+// Slide in from bottom
+@keyframes slideInBottom {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+// Scale in animation
+@keyframes scaleIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+// ===========================================
+// LOGO INTRO ANIMATION (NEW)
+// ===========================================
+
+// Main logo animation - from center to top-left corner
+@keyframes logoIntro {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  60% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(
+      calc(-50vw + 80px),
+      calc(-50vh + 50px)
+    ) scale(0.35);
+    opacity: 0;
+  }
+}
+
+// Overlay fade animation
+@keyframes overlayFade {
+  0%, 50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+// ===========================================
+// ANIMATION CLASSES
+// ===========================================
+
+.animate-shake {
+  animation: shake 0.3s ease-in-out;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.animate-fade-out {
+  animation: fadeOut 0.3s ease-out forwards;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.3s ease-out forwards;
+}
+
+.animate-slide-in-bottom {
+  animation: slideInBottom 0.3s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.2s ease-out forwards;
+}
+
+// ===========================================
+// TRANSITION UTILITIES
+// ===========================================
+
+.transition-fast {
+  transition: all $transition-fast;
+}
+
+.transition-normal {
+  transition: all $transition-normal;
+}
+
+.transition-slow {
+  transition: all $transition-slow;
+}
+
+// ===========================================
+// DRAG & DROP ANIMATIONS
+// ===========================================
+
+.cdk-drag-preview {
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  opacity: 0.9;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.3;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drop-list-dragging .board-card:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+// Drop zone highlight
+.drop-zone-highlight {
+  background-color: rgba($color-primary-light, 0.1);
+  border: 2px dashed $color-primary-light;
+  border-radius: $border-radius-md;
+}

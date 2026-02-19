@@ -1,0 +1,346 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+// ===========================================
+// ANIMATION OVERLAY + LOGO
+// Identical look to index.html splash screen
+// ===========================================
+
+.animation-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: $color-primary;
+  z-index: 9998;
+  transition: opacity 0.5s ease-out;
+
+  &.fade-out {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &.done {
+    display: none;
+  }
+}
+
+.animation-logo {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+
+  img {
+    width: 274px;
+    height: auto;
+
+    @include mobile {
+      width: 200px;
+    }
+  }
+
+  // Desktop: End position matches header logo (top-left corner)
+  // scale(0.364) from original frontend
+  &.move-to-corner {
+    top: 64px;
+    left: clamp(32px, 6vw, 64px);
+    transform: translate(0, 0) scale(0.364);
+    transform-origin: top left;
+    opacity: 0;
+
+    // Mobile: Logo ends up centered at top (matching mobile-header layout)
+    @include mobile {
+      top: 32px;
+      left: 50%;
+      transform: translate(-50%, 0) scale(0.32);
+      transform-origin: top center;
+    }
+  }
+
+  &.done {
+    display: none;
+  }
+}
+
+// ===========================================
+// WELCOME PAGE
+// ===========================================
+
+.welcome-page {
+  min-height: 100vh;
+  background-color: $color-primary;
+  @include flex-column;
+  position: relative;
+
+  @include mobile {
+    padding: $spacing-md;
+    padding-top: 0;
+  }
+}
+
+// ===========================================
+// DESKTOP HEADER (positioned absolute for centering)
+// ===========================================
+
+.desktop-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: min(100%, $max-width);
+  margin: 0 auto;
+  padding: $spacing-xl clamp(32px, 6vw, 64px);
+  z-index: 10;
+
+  @include mobile {
+    display: none;
+  }
+}
+
+.header-logo img {
+  height: 48px;
+  width: auto;
+}
+
+// ===========================================
+// MAIN CONTENT
+// ===========================================
+
+.welcome-main {
+  flex: 1;
+  @include flex-center;
+  padding: $spacing-md;
+
+  @include mobile {
+    flex-direction: column;
+    padding: 0;
+    align-items: stretch;
+  }
+}
+
+// Mobile Header - Hidden on Desktop
+.mobile-header {
+  display: none;
+
+  @include mobile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: $spacing-xl $spacing-lg;
+    padding-bottom: $spacing-lg;
+    gap: $spacing-md;
+
+    .logo img {
+      height: 64px;
+      width: auto;
+    }
+
+    .signup-link {
+      display: flex;
+      align-items: center;
+      gap: $spacing-xs;
+      color: white;
+      font-size: $font-size-base;
+
+      span {
+        opacity: 0.8;
+      }
+
+      a {
+        color: white;
+        font-weight: $font-weight-regular;
+        text-decoration: none;
+
+        &:hover {
+          opacity: 0.8;
+        }
+      }
+    }
+  }
+}
+
+.welcome-card {
+  background-color: $color-background-card;
+  border-radius: $border-radius-xl;
+  padding: $spacing-xxl;
+  width: min(100%, 600px);
+  box-shadow: 0px 0px 14px 3px $shadow-light;
+  @include flex-column;
+  align-items: center;
+  gap: $spacing-md;
+
+  h1 {
+    font-size: 47px;
+    font-weight: $font-weight-bold;
+    color: $color-text-primary;
+  }
+
+  @include mobile {
+    flex: 1;
+    width: 100%;
+    border-radius: $border-radius-xl;
+    padding: $spacing-xl $spacing-lg;
+    padding-top: $spacing-xxl;
+    justify-content: flex-start;
+    box-shadow: 0px 0px 14px 3px $shadow-light;
+
+    h1 {
+      font-size: 36px;
+    }
+  }
+}
+
+.separator {
+  width: 150px;
+  height: 3px;
+  background-color: $color-primary-light;
+
+  @include mobile {
+    width: 100px;
+  }
+}
+
+.welcome-text {
+  text-align: center;
+  color: $color-text-primary;
+  font-size: $font-size-base;
+  line-height: 1.6;
+  max-width: 450px;
+
+  @include mobile {
+    font-size: $font-size-sm;
+    max-width: 300px;
+  }
+}
+
+.options-container {
+  display: flex;
+  gap: $spacing-xxl;
+  margin-top: $spacing-lg;
+  width: 100%;
+  justify-content: center;
+
+  @include mobile {
+    flex-direction: column;
+    gap: $spacing-xl;
+    align-items: center;
+    margin-top: $spacing-md;
+  }
+}
+
+.option {
+  @include flex-column;
+  align-items: flex-start;
+  gap: $spacing-md;
+
+  @include mobile {
+    align-items: center;
+    gap: $spacing-sm;
+  }
+}
+
+.option-header {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  color: $color-text-primary;
+  font-size: $font-size-base;
+  font-weight: $font-weight-regular;
+
+  @include mobile {
+    font-size: $font-size-sm;
+  }
+}
+
+.option-icon {
+  width: 24px;
+  height: 24px;
+
+  @include mobile {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+// Buttons with identical height
+.btn-primary,
+.btn-secondary {
+  @include button-base;
+  border-radius: $border-radius-sm;
+  padding: 14px 24px;
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  min-width: 160px;
+  height: 48px; // Fixed height for both buttons
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @include mobile {
+    min-width: 180px;
+    height: 44px;
+  }
+}
+
+.btn-primary {
+  background-color: $color-primary-light;
+  color: $color-text-white;
+
+  &:hover {
+    background-color: #1e8bb8; // Darker shade without using darken()
+    box-shadow: 0 4px 4px $shadow-dark;
+  }
+
+  &:active {
+    background-color: #1a7aa3;
+    box-shadow: 0 4px 4px $shadow-dark;
+  }
+}
+
+.btn-secondary {
+  background: transparent;
+  color: $color-primary;
+  border: solid 1px $color-primary;
+
+  &:hover {
+    border-color: $color-primary-light;
+    color: $color-primary-light;
+    box-shadow: 0 4px 4px $shadow-dark;
+  }
+
+  &:active {
+    border-color: $color-primary-dark;
+    color: $color-primary-dark;
+    box-shadow: 0 4px 4px $shadow-dark;
+  }
+}
+
+// Footer - Visible on Mobile (outside card, on blue background)
+.welcome-footer {
+  display: none;
+
+  @include mobile {
+    display: flex;
+    justify-content: center;
+    gap: $spacing-xl;
+    padding: $spacing-lg;
+    background-color: $color-primary;
+    width: 100%;
+
+    a {
+      color: white;
+      text-decoration: none;
+      font-size: $font-size-sm;
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+  }
+}

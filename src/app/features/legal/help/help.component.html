@@ -1,0 +1,78 @@
+@if (isLoggedIn()) {
+  <app-sidebar />
+  <app-header />
+  <main class="main-content">
+    <div class="help-headline">
+      <h1>Help</h1>
+      <button class="help-back-button" (click)="goBack()">
+        <img class="thin-back-button" src="assets/icons/arrow_left_icon_light_blue_thin.png" alt="Back" />
+        <img class="thick-back-button" src="assets/icons/arrow_left_icon_light_blue_thick.png" alt="Back" />
+      </button>
+    </div>
+    <ng-container *ngTemplateOutlet="helpContent" />
+  </main>
+} @else {
+  <div class="legal-page">
+    <header class="legal-header">
+      <a class="back-link" (click)="goBack()">
+        <img src="assets/icons/arrow_left.png" alt="Back" />
+      </a>
+    </header>
+    <main class="legal-content">
+      <h1>Help</h1>
+      <ng-container *ngTemplateOutlet="helpContent" />
+    </main>
+  </div>
+}
+
+<ng-template #helpContent>
+  <div class="help-container">
+    <p>Welcome to the help page for <span class="help-join">Join</span>. Here, you will find an overview of our kanban project management tool, its benefits, and how to use it effectively.</p>
+  </div>
+
+  <div class="help-section">
+    <h2 class="help-subtitle">1. What is Join?</h2>
+    <p><span class="help-join">Join</span> is a kanban-based project management tool developed as part of a web development bootcamp at the Developer Akademie.</p>
+    <p>Kanban, a Japanese term meaning "billboard", is a method that helps visualize work, limit work-in-progress, and maximize efficiency. <span class="help-join">Join</span> follows these principles to provide an intuitive and visual interface for task and project management.</p>
+    <p>Please note that <span class="help-join">Join</span> is an educational project and is not intended for professional business use. We do our best to ensure usability but cannot guarantee availability, accuracy, or reliability.</p>
+  </div>
+
+  <div class="help-section">
+    <h2 class="help-subtitle">2. How to use Join</h2>
+    <p>Below is a step-by-step guide on how to use <span class="help-join">Join</span> effectively.</p>
+  </div>
+
+  <div class="help-section">
+    <h3 class="help-subtitle">2.1 Exploring the Board</h3>
+    <p>After logging in, you will see the default board, which represents your project. It consists of four lists: "To Do", "In Progress", "Await Feedback", and "Done".</p>
+  </div>
+
+  <div class="help-section">
+    <h3 class="help-subtitle">2.2 Creating Contacts</h3>
+    <p>You can add contacts to collaborate on projects. Navigate to the "Contacts" section, click "New Contact", and enter the required details. Contacts can be assigned tasks and interact with them on the board.</p>
+  </div>
+
+  <div class="help-section">
+    <h3 class="help-subtitle">2.3 Adding Cards</h3>
+    <p>Tasks are represented by cards. Click the "+" button under a list to create a new card. You can add a task name, description, due date, and assignees.</p>
+  </div>
+
+  <div class="help-section">
+    <h3 class="help-subtitle">2.4 Moving Cards</h3>
+    <p>As a task progresses, move it across lists by dragging and dropping the card to the appropriate stage.</p>
+  </div>
+
+  <div class="help-section">
+    <h3 class="help-subtitle">2.5 Deleting Cards</h3>
+    <p>Completed tasks can either be moved to the "Done" list or deleted. Deleting a card removes it permanently. Please proceed with caution, as this action is irreversible.</p>
+  </div>
+
+  <div class="help-section">
+    <h2 class="help-subtitle">3. Contact</h2>
+    <p>If you have further questions regarding <span class="help-join">Join</span>, please contact us at <a href="mailto:business@heistermann-solutions.de">business&#64;heistermann-solutions.de</a>. We are happy to assist you.</p>
+  </div>
+
+  <div class="help-section">
+    <h2 class="help-enjoy-join">Enjoy using Join!</h2>
+  </div>
+</ng-template>
