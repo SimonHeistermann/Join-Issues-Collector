@@ -45,10 +45,30 @@ export class NotificationService {
   }
 
   /**
-   * Send confirmation email for new ticket
-   * Called by n8n workflow after email-to-ticket processing
+   * Send confirmation email for form-submitted request
+   * Triggers n8n workflow to send confirmation to external creator
    */
-  async sendTicketConfirmation(_task: Task): Promise<void> {
-    // Handled by n8n workflow — placeholder for potential direct email sending
+  async sendFormConfirmation(task: Task): Promise<void> {
+    if (!task.creator?.email || !environment.n8nFormWebhookUrl) return;
+
+    const payload = {
+      taskId: task.id,
+      taskName: task.name,
+      taskDescription: task.description,
+      prio: task.prio,
+      due_date: task.due_date,
+      category: task.category,
+      subtasks: task.subtasks,
+      creator: task.creator,
+      timestamp: new Date().toISOString()
+    };
+
+    try {
+      await firstValueFrom(
+        this.http.post(environment.n8nFormWebhookUrl, payload)
+      );
+    } catch {
+      // Confirmation delivery is non-critical; silently ignore failures
+    }
   }
 }

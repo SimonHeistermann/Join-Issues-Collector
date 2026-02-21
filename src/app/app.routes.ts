@@ -33,6 +33,11 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/stakeholder/limit-reached/limit-reached.component').then(m => m.LimitReachedComponent)
   },
+  {
+    path: 'create-request',
+    loadComponent: () =>
+      import('./features/stakeholder/create-request/create-request.component').then(m => m.CreateRequestComponent)
+  },
 
   // Protected routes (auth required)
   {
