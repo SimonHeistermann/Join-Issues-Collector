@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../../core/services';
+import { AuthService, SanitizationService } from '../../../core/services';
 
 /**
  * Register Component
@@ -18,6 +18,7 @@ import { AuthService } from '../../../core/services';
 export class RegisterComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
+  private sanitization = inject(SanitizationService);
 
   // Form fields
   name = '';
@@ -125,8 +126,8 @@ export class RegisterComponent {
     // Attempt registration
     this.isLoading.set(true);
     const result = await this.authService.register({
-      name: this.name,
-      email: this.email,
+      name: this.sanitization.sanitizeText(this.name.trim()),
+      email: this.email.trim(),
       password: this.password,
       confirmPassword: this.confirmPassword,
       acceptPrivacy: this.acceptPrivacy

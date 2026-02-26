@@ -1,12 +1,12 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Task, TaskStatus } from '../models';
 
 /**
  * Notification Service
- * Handles sending notifications via n8n webhooks
+ * Handles sending notifications via n8n webhooks with HMAC-SHA256 signing
  */
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
@@ -36,8 +36,9 @@ export class NotificationService {
     };
 
     try {
+      const headers = await this.buildSignedHeaders(payload);
       await firstValueFrom(
-        this.http.post(environment.n8nWebhookUrl, payload)
+        this.http.post(environment.n8nWebhookUrl, payload, { headers })
       );
     } catch {
       // Notification delivery is non-critical; silently ignore failures
@@ -64,11 +65,42 @@ export class NotificationService {
     };
 
     try {
+      const headers = await this.buildSignedHeaders(payload);
       await firstValueFrom(
-        this.http.post(environment.n8nFormWebhookUrl, payload)
+        this.http.post(environment.n8nFormWebhookUrl, payload, { headers })
       );
     } catch {
       // Confirmation delivery is non-critical; silently ignore failures
     }
+  }
+
+  /**
+   * Compute HMAC-SHA256 signature and return headers with signature attached
+   */
+  private async buildSignedHeaders(payload: object): Promise<HttpHeaders> {
+    const body = JSON.stringify(payload);
+    const signature = await this.computeHmac(body);
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      'X-Webhook-Signature': signature
+    });
+  }
+
+  /**
+   * Compute HMAC-SHA256 hex digest using Web Crypto API (browser-native)
+   */
+  private async computeHmac(data: string): Promise<string> {
+    const encoder = new TextEncoder();
+    const key = await crypto.subtle.importKey(
+      'raw',
+      encoder.encode(environment.n8nWebhookSecret),
+      { name: 'HMAC', hash: 'SHA-256' },
+      false,
+      ['sign']
+    );
+    const signature = await crypto.subtle.sign('HMAC', key, encoder.encode(data));
+    return Array.from(new Uint8Array(signature))
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('');
   }
 }

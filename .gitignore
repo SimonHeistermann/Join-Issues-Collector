@@ -15,10 +15,13 @@
 # Angular
 # ========================
 /.angular
+.vscode/
 
 # ========================
 # Environment & Secrets
 # ========================
+src/environments/environment.ts
+src/environments/environment.prod.ts
 src/environments/environment.local.ts
 .env
 .env.*

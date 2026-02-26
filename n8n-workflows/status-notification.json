@@ -17,6 +17,47 @@
     },
     {
       "parameters": {
+        "jsCode": "const crypto = require('crypto');\nconst SECRET = 'join-webhook-secret-2026';\nconst signature = $input.first().json.headers['x-webhook-signature'] || '';\nconst body = JSON.stringify($input.first().json.body);\nconst expected = crypto.createHmac('sha256', SECRET).update(body).digest('hex');\n\nif (!signature || signature !== expected) {\n  return { verified: false };\n}\n\nreturn { ...$input.first().json, verified: true };"
+      },
+      "id": "verify-signature",
+      "name": "Verify Signature",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [400, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.verified }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "is-signature-valid",
+      "name": "Signature Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [550, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: false, message: 'Invalid webhook signature' }) }}",
+        "options": {
+          "responseCode": 403
+        }
+      },
+      "id": "respond-rejected",
+      "name": "Respond Rejected",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [700, 450]
+    },
+    {
+      "parameters": {
         "conditions": {
           "string": [
             {
@@ -31,7 +72,7 @@
       "name": "Is External Creator?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [450, 300]
+      "position": [700, 250]
     },
     {
       "parameters": {
@@ -138,7 +179,36 @@
       "main": [
         [
           {
+            "node": "Verify Signature",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify Signature": {
+      "main": [
+        [
+          {
+            "node": "Signature Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Signature Valid?": {
+      "main": [
+        [
+          {
             "node": "Is External Creator?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Rejected",
             "type": "main",
             "index": 0
           }

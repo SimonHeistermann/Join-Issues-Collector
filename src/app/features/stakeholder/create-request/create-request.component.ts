@@ -2,7 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { TaskService, RateLimitService, NotificationService } from '../../../core/services';
+import { TaskService, RateLimitService, NotificationService, SanitizationService } from '../../../core/services';
 import { firstValueFrom } from 'rxjs';
 import { SubTask, TaskPriority, TaskCategory } from '../../../core/models/task.model';
 import { environment } from '../../../../environments/environment';
@@ -19,6 +19,7 @@ export class CreateRequestComponent implements OnInit {
   private rateLimitService = inject(RateLimitService);
   private notificationService = inject(NotificationService);
   private router = inject(Router);
+  private sanitization = inject(SanitizationService);
 
   usedRequests = signal(0);
 
@@ -31,6 +32,9 @@ export class CreateRequestComponent implements OnInit {
   category: TaskCategory | '' = '';
   dueDate = '';
   privacyAccepted = false;
+
+  // Honeypot (bot protection)
+  honeypot = '';
 
   // Subtasks
   subtasks: SubTask[] = [];
@@ -245,6 +249,16 @@ export class CreateRequestComponent implements OnInit {
 
     if (!this.validateForm() || this.submitting) return;
 
+    // Honeypot check: if filled, a bot submitted the form → fake success
+    if (this.honeypot) {
+      this.showNotification = true;
+      setTimeout(() => {
+        this.showNotification = false;
+        this.router.navigate(['/stakeholder']);
+      }, 3000);
+      return;
+    }
+
     this.submitting = true;
 
     try {
@@ -257,12 +271,16 @@ export class CreateRequestComponent implements OnInit {
       // Load existing tasks first to prevent overwriting them
       await firstValueFrom(this.taskService.loadTasks());
 
-      const creator = { name: this.name.trim(), email: this.email.trim(), type: 'external' as const };
+      const creator = {
+        name: this.sanitization.sanitizeText(this.name.trim()),
+        email: this.email.trim(),
+        type: 'external' as const
+      };
 
       const task = await this.taskService.createTask(
         {
-          name: this.title.trim(),
-          description: this.description.trim(),
+          name: this.sanitization.sanitizeText(this.title.trim()),
+          description: this.sanitization.sanitizeText(this.description.trim()),
           assigned_to: '',
           due_date: this.dueDate,
           prio: this.priority,
@@ -303,6 +321,7 @@ export class CreateRequestComponent implements OnInit {
     this.editingSubtaskId = null;
     this.editingSubtaskText = '';
     this.categoryDropdownOpen = false;
+    this.honeypot = '';
     this.touched = {};
     this.submitAttempted = false;
   }

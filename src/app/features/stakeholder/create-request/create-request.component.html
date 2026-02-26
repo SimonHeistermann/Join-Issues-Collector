@@ -63,6 +63,12 @@
           </div>
         </div>
 
+        <!-- Honeypot (bot protection) -->
+        <div class="honeypot-field" aria-hidden="true">
+          <label for="website">Website</label>
+          <input type="text" id="website" name="website" [(ngModel)]="honeypot" tabindex="-1" autocomplete="off">
+        </div>
+
         <!-- Title -->
         <div class="input-container">
           <label><h3>Request Title<span class="red-star">*</span></h3></label>

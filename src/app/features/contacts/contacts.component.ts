@@ -5,7 +5,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
 import { HeaderComponent } from '../../shared/components/header/header.component';
-import { ContactService, AuthService, TaskService } from '../../core/services';
+import { ContactService, AuthService, TaskService, SanitizationService } from '../../core/services';
 import { Contact, ContactFormData, getBadgeColor, getContactInitials } from '../../core/models/contact.model';
 
 @Component({
@@ -20,6 +20,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private taskService = inject(TaskService);
   private route = inject(ActivatedRoute);
+  private sanitization = inject(SanitizationService);
   private subscriptions: Subscription[] = [];
 
   contactGroups: { letter: string; contacts: Contact[] }[] = [];
@@ -211,16 +212,22 @@ export class ContactsComponent implements OnInit, OnDestroy {
     event.preventDefault();
     if (!this.validateForm()) return;
 
+    const sanitizedData = {
+      name: this.sanitization.sanitizeText(this.formData.name.trim()),
+      email: this.formData.email.trim(),
+      phone: this.formData.phone.trim()
+    };
+
     if (this.overlayMode === 'add') {
-      const newContact = await this.contactService.createContact(this.formData);
+      const newContact = await this.contactService.createContact(sanitizedData);
       this.loadContacts();
       this.selectedContact = newContact;
       this.detailsVisible = true;
       this.showSuccessNotification('Contact successfully created');
     } else if (this.overlayMode === 'edit' && this.selectedContact) {
-      await this.contactService.updateContact(this.selectedContact.id, this.formData);
+      await this.contactService.updateContact(this.selectedContact.id, sanitizedData);
       this.loadContacts();
-      this.selectedContact = { ...this.selectedContact, ...this.formData };
+      this.selectedContact = { ...this.selectedContact, ...sanitizedData };
       this.detailsVisible = true;
       this.showSuccessNotification('Contact successfully updated');
     }

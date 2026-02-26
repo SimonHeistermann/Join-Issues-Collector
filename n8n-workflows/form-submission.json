@@ -17,13 +17,54 @@
     },
     {
       "parameters": {
+        "jsCode": "const crypto = require('crypto');\nconst SECRET = 'join-webhook-secret-2026';\nconst signature = $input.first().json.headers['x-webhook-signature'] || '';\nconst body = JSON.stringify($input.first().json.body);\nconst expected = crypto.createHmac('sha256', SECRET).update(body).digest('hex');\n\nif (!signature || signature !== expected) {\n  return { verified: false };\n}\n\nreturn { ...$input.first().json, verified: true };"
+      },
+      "id": "verify-signature",
+      "name": "Verify Signature",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [400, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.verified }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "is-signature-valid",
+      "name": "Signature Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [550, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: false, message: 'Invalid webhook signature' }) }}",
+        "options": {
+          "responseCode": 403
+        }
+      },
+      "id": "respond-rejected",
+      "name": "Respond Rejected",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [700, 450]
+    },
+    {
+      "parameters": {
         "jsCode": "const data = $input.first().json.body;\n\n// Status label mapping\nconst priorityLabels = {\n  1: 'Low',\n  2: 'Medium',\n  3: 'Urgent'\n};\n\nconst categoryLabels = {\n  'tt': 'Technical Task',\n  'us': 'User Story'\n};\n\nconst taskId = data.taskId || data.id || '';\nconst taskName = data.taskName || data.name || '';\nconst taskDescription = data.taskDescription || data.description || '';\nconst priority = priorityLabels[data.prio] || 'Medium';\nconst category = categoryLabels[data.category] || 'User Story';\nconst dueDate = data.due_date || 'Not set';\nconst creatorName = data.creator?.name || 'Unknown';\nconst creatorEmail = data.creator?.email;\n\n// Format subtasks\nlet subtasksText = '';\nlet subtasksHtml = '';\nif (Array.isArray(data.subtasks) && data.subtasks.length > 0) {\n  subtasksText = data.subtasks.map(st => '- ' + st.name).join('\\n');\n  subtasksHtml = '<tr><td style=\"padding:10px 12px;font-weight:bold;color:#666;border-bottom:1px solid #eee;vertical-align:top;width:130px;\">Subtasks</td><td style=\"padding:10px 12px;border-bottom:1px solid #eee;\"><ul style=\"margin:0;padding-left:18px;\">' + data.subtasks.map(st => '<li>' + st.name + '</li>').join('') + '</ul></td></tr>';\n}\n\nconst descHtml = (taskDescription || '').replace(/\\n/g, '<br/>');\n\n// Build confirmation email HTML\nconst emailHtml = '<div style=\"font-family:Arial,sans-serif;max-width:600px;margin:0 auto;\">' +\n  '<div style=\"background:#2A3647;padding:24px;text-align:center;border-radius:8px 8px 0 0;\">' +\n  '<h1 style=\"color:white;margin:0;font-size:20px;\">Request Received</h1>' +\n  '</div>' +\n  '<div style=\"padding:24px;background:white;border:1px solid #e0e0e0;\">' +\n  '<p style=\"font-size:16px;\">Hello ' + creatorName + ',</p>' +\n  '<p>Thank you for your request! We have received it and created a ticket for you. Our team will review it shortly.</p>' +\n  '<table style=\"width:100%;border-collapse:collapse;margin:16px 0;\">' +\n  '<tr><td style=\"padding:10px 12px;font-weight:bold;color:#666;border-bottom:1px solid #eee;width:130px;\">Ticket ID</td><td style=\"padding:10px 12px;border-bottom:1px solid #eee;\">' + taskId + '</td></tr>' +\n  '<tr><td style=\"padding:10px 12px;font-weight:bold;color:#666;border-bottom:1px solid #eee;\">Title</td><td style=\"padding:10px 12px;border-bottom:1px solid #eee;\">' + taskName + '</td></tr>' +\n  '<tr><td style=\"padding:10px 12px;font-weight:bold;color:#666;border-bottom:1px solid #eee;\">Status</td><td style=\"padding:10px 12px;border-bottom:1px solid #eee;\"><span style=\"background:#29ABE2;padding:2px 10px;border-radius:4px;font-size:13px;color:white;\">Triage</span></td></tr>' +\n  '<tr><td style=\"padding:10px 12px;font-weight:bold;color:#666;border-bottom:1px solid #eee;\">Priority</td><td style=\"padding:10px 12px;border-bottom:1px solid #eee;\">' + priority + '</td></tr>' +\n  '<tr><td style=\"padding:10px 12px;font-weight:bold;color:#666;border-bottom:1px solid #eee;\">Due Date</td><td style=\"padding:10px 12px;border-bottom:1px solid #eee;\">' + dueDate + '</td></tr>' +\n  '<tr><td style=\"padding:10px 12px;font-weight:bold;color:#666;border-bottom:1px solid #eee;\">Category</td><td style=\"padding:10px 12px;border-bottom:1px solid #eee;\">' + category + '</td></tr>' +\n  subtasksHtml +\n  '</table>' +\n  '<div style=\"background:#f8f9fa;padding:16px;border-radius:4px;margin:16px 0;\">' +\n  '<strong>Description:</strong><br/>' + descHtml +\n  '</div>' +\n  '<p style=\"color:#888;font-size:14px;\">You will receive a notification when the status of your request changes.</p>' +\n  '</div>' +\n  '<div style=\"padding:16px 24px;background:#f4f4f4;text-align:center;border-radius:0 0 8px 8px;\">' +\n  '<p style=\"color:#888;font-size:12px;margin:0;\">Join Team</p>' +\n  '</div></div>';\n\n// Build plain text version\nlet emailText = 'Request Received\\n\\nHello ' + creatorName + ',\\n\\n';\nemailText += 'Thank you for your request! We have received it and created a ticket for you. Our team will review it shortly.\\n\\n';\nemailText += 'Ticket ID: ' + taskId + '\\n';\nemailText += 'Title: ' + taskName + '\\n';\nemailText += 'Status: Triage\\n';\nemailText += 'Priority: ' + priority + '\\n';\nemailText += 'Due Date: ' + dueDate + '\\n';\nemailText += 'Category: ' + category + '\\n';\nif (subtasksText) emailText += '\\nSubtasks:\\n' + subtasksText + '\\n';\nemailText += '\\nDescription:\\n' + taskDescription + '\\n\\n';\nemailText += 'You will receive a notification when the status of your request changes.\\n\\n---\\nJoin Team';\n\nreturn {\n  taskId: taskId,\n  taskName: taskName,\n  creatorName: creatorName,\n  creatorEmail: creatorEmail,\n  emailHtml: emailHtml,\n  emailText: emailText,\n  emailSubject: 'Request Received: ' + taskName\n};"
       },
       "id": "prepare-confirmation-data",
       "name": "Prepare Confirmation Data",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [450, 300]
+      "position": [700, 250]
     },
     {
       "parameters": {
@@ -39,7 +80,7 @@
       "name": "Send Confirmation Email",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [650, 300],
+      "position": [900, 250],
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 3000,
@@ -59,7 +100,7 @@
       "name": "Respond Success",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
-      "position": [850, 300]
+      "position": [1100, 250]
     }
   ],
   "connections": {
@@ -67,7 +108,36 @@
       "main": [
         [
           {
+            "node": "Verify Signature",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify Signature": {
+      "main": [
+        [
+          {
+            "node": "Signature Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Signature Valid?": {
+      "main": [
+        [
+          {
             "node": "Prepare Confirmation Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Rejected",
             "type": "main",
             "index": 0
           }

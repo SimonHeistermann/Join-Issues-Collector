@@ -10,7 +10,7 @@ import { AvatarBadgeComponent } from '../../shared/components/avatar-badge/avata
 import { PriorityIconComponent } from '../../shared/components/priority-icon/priority-icon.component';
 import { TruncatePipe } from '../../shared/pipes/truncate.pipe';
 import { AddTaskComponent } from '../add-task/add-task.component';
-import { TaskService, ContactService, AuthService } from '../../core/services';
+import { TaskService, ContactService, AuthService, SanitizationService } from '../../core/services';
 import { Task, TaskStatus, TaskPriority, TaskCategory, SubTask, BOARD_COLUMNS, getCategoryLabel, getPriorityLabel } from '../../core/models';
 import { Contact, getBadgeColor, getContactInitials } from '../../core/models/contact.model';
 
@@ -37,6 +37,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   private contactService = inject(ContactService);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private sanitization = inject(SanitizationService);
   private subscriptions: Subscription[] = [];
 
   columns = BOARD_COLUMNS;
@@ -295,14 +296,16 @@ export class BoardComponent implements OnInit, OnDestroy {
           }, {} as Record<string, string>)
         : '';
 
+    const sanitizedSubtasks = this.editSubtasks.map(st => ({ ...st, name: this.sanitization.sanitizeText(st.name) }));
+
     await this.taskService.updateTask({
       ...this.selectedTask,
-      name: this.editTitle.trim(),
-      description: this.editDescription.trim(),
+      name: this.sanitization.sanitizeText(this.editTitle.trim()),
+      description: this.sanitization.sanitizeText(this.editDescription.trim()),
       assigned_to: assignedTo,
       due_date: this.editDueDate,
       prio: this.editPriority,
-      subtasks: this.editSubtasks.length > 0 ? [...this.editSubtasks] : ''
+      subtasks: sanitizedSubtasks.length > 0 ? sanitizedSubtasks : ''
     });
 
     this.loadTasks();

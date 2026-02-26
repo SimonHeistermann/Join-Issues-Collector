@@ -5,7 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
 import { HeaderComponent } from '../../shared/components/header/header.component';
-import { TaskService, ContactService, AuthService } from '../../core/services';
+import { TaskService, ContactService, AuthService, SanitizationService } from '../../core/services';
 import { Contact, getBadgeColor, getContactInitials } from '../../core/models/contact.model';
 import { Task, SubTask, TaskPriority, TaskCategory, TaskStatus } from '../../core/models/task.model';
 
@@ -21,6 +21,7 @@ export class AddTaskComponent implements OnInit, OnChanges, OnDestroy {
   private contactService = inject(ContactService);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private sanitization = inject(SanitizationService);
   private subscriptions: Subscription[] = [];
 
   @Input() overlayMode = false;
@@ -298,17 +299,19 @@ export class AddTaskComponent implements OnInit, OnChanges, OnDestroy {
           }, {} as Record<string, string>)
         : '';
 
+    const sanitizedSubtasks = this.subtasks.map(st => ({ ...st, name: this.sanitization.sanitizeText(st.name) }));
+
     if (this.isEditMode && this.editTask) {
       await this.taskService.updateTask({
         ...this.editTask,
-        name: this.title.trim(),
-        description: this.description.trim(),
+        name: this.sanitization.sanitizeText(this.title.trim()),
+        description: this.sanitization.sanitizeText(this.description.trim()),
         assigned_to: assignedTo,
         due_date: this.dueDate,
         prio: this.priority,
         category: this.category as TaskCategory,
         status: this.defaultStatus,
-        subtasks: this.subtasks.length > 0 ? [...this.subtasks] : ''
+        subtasks: sanitizedSubtasks.length > 0 ? sanitizedSubtasks : ''
       });
     } else {
       const currentUser = this.authService.getCurrentUser();
@@ -318,14 +321,14 @@ export class AddTaskComponent implements OnInit, OnChanges, OnDestroy {
 
       await this.taskService.createTask(
         {
-          name: this.title.trim(),
-          description: this.description.trim(),
+          name: this.sanitization.sanitizeText(this.title.trim()),
+          description: this.sanitization.sanitizeText(this.description.trim()),
           assigned_to: assignedTo,
           due_date: this.dueDate,
           prio: this.priority,
           category: this.category as TaskCategory,
           status: this.defaultStatus,
-          subtasks: this.subtasks.length > 0 ? [...this.subtasks] : '',
+          subtasks: sanitizedSubtasks.length > 0 ? sanitizedSubtasks : '',
           creator
         },
         creator

@@ -4,3 +4,4 @@ export * from './task.service';
 export * from './contact.service';
 export * from './notification.service';
 export * from './rate-limit.service';
+export * from './sanitization.service';

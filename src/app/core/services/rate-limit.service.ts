@@ -9,13 +9,15 @@ interface RateLimitData {
 
 /**
  * Rate Limit Service
- * Tracks daily email-to-ticket requests (max 10 per day)
+ * Tracks daily requests per client fingerprint + global fallback (max 10/client, 50/day global)
  */
 @Injectable({ providedIn: 'root' })
 export class RateLimitService {
   private firebase = inject(FirebaseService);
 
-  private readonly MAX_DAILY_REQUESTS = 10;
+  private readonly MAX_CLIENT_REQUESTS = 10;
+  private readonly MAX_GLOBAL_REQUESTS = 50;
+  private fingerprint: string | null = null;
 
   /**
    * Get today's date key in YYYY-MM-DD format
@@ -25,18 +27,50 @@ export class RateLimitService {
   }
 
   /**
-   * Get today's usage count
+   * Generate a browser fingerprint hash using Web Crypto API
+   */
+  private async getFingerprint(): Promise<string> {
+    if (this.fingerprint) return this.fingerprint;
+    const raw = [
+      navigator.userAgent,
+      screen.width.toString(),
+      screen.height.toString(),
+      Intl.DateTimeFormat().resolvedOptions().timeZone
+    ].join('|');
+    const encoder = new TextEncoder();
+    const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(raw));
+    this.fingerprint = Array.from(new Uint8Array(hashBuffer))
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('')
+      .substring(0, 16);
+    return this.fingerprint;
+  }
+
+  /**
+   * Get today's usage count for the current client
    */
   async getTodayUsage(): Promise<number> {
     const today = this.getDateKey();
+    const fp = await this.getFingerprint();
     const data = await firstValueFrom(
-      this.firebase.loadData<RateLimitData>(`rate_limits/${today}`)
+      this.firebase.loadData<RateLimitData>(`rate_limits/${today}/${fp}`)
     );
     return data?.count || 0;
   }
 
   /**
-   * Check if more requests are allowed today
+   * Get today's global usage count
+   */
+  private async getGlobalUsage(): Promise<number> {
+    const today = this.getDateKey();
+    const data = await firstValueFrom(
+      this.firebase.loadData<RateLimitData>(`rate_limits/${today}/_global`)
+    );
+    return data?.count || 0;
+  }
+
+  /**
+   * Check if more requests are allowed today (per-client + global)
    */
   async checkLimit(): Promise<{
     allowed: boolean;
@@ -44,29 +78,46 @@ export class RateLimitService {
     remaining: number;
     max: number;
   }> {
-    const used = await this.getTodayUsage();
+    const [clientUsed, globalUsed] = await Promise.all([
+      this.getTodayUsage(),
+      this.getGlobalUsage()
+    ]);
+    const clientAllowed = clientUsed < this.MAX_CLIENT_REQUESTS;
+    const globalAllowed = globalUsed < this.MAX_GLOBAL_REQUESTS;
     return {
-      allowed: used < this.MAX_DAILY_REQUESTS,
-      used,
-      remaining: Math.max(0, this.MAX_DAILY_REQUESTS - used),
-      max: this.MAX_DAILY_REQUESTS
+      allowed: clientAllowed && globalAllowed,
+      used: clientUsed,
+      remaining: Math.max(0, this.MAX_CLIENT_REQUESTS - clientUsed),
+      max: this.MAX_CLIENT_REQUESTS
     };
   }
 
   /**
-   * Increment today's usage count
-   * Called after successful email-to-ticket conversion (by n8n)
+   * Increment today's usage count (both per-client and global)
    */
   async incrementUsage(): Promise<void> {
     const today = this.getDateKey();
-    const current = await this.getTodayUsage();
+    const fp = await this.getFingerprint();
+    const [clientCurrent, globalCurrent] = await Promise.all([
+      this.getTodayUsage(),
+      this.getGlobalUsage()
+    ]);
+    const timestamp = new Date().toISOString();
 
-    await firstValueFrom(
-      this.firebase.putData(`rate_limits/${today}`, {
-        count: current + 1,
-        last_updated: new Date().toISOString()
-      })
-    );
+    await Promise.all([
+      firstValueFrom(
+        this.firebase.putData(`rate_limits/${today}/${fp}`, {
+          count: clientCurrent + 1,
+          last_updated: timestamp
+        })
+      ),
+      firstValueFrom(
+        this.firebase.putData(`rate_limits/${today}/_global`, {
+          count: globalCurrent + 1,
+          last_updated: timestamp
+        })
+      )
+    ]);
   }
 
   /**
