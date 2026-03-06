@@ -23,4 +23,8 @@ export class PrivacyPolicyComponent {
   goBack(): void {
     this.location.back();
   }
+
+  scrollTo(id: string): void {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  }
 }

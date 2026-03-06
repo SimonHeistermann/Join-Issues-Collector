@@ -19,6 +19,12 @@
 
 ---
 
+## Disclaimer
+
+> This is a **training project** built as part of my education at [Developer Akademie](https://developerakademie.com/). It is not a commercial product and is not intended for real-world use. This is a demo application — no real transactions or services are processed. Do not enter real personal data.
+
+---
+
 ## About
 
 **Join Issue Collector** is a modern Kanban project management application built with Angular 19. It extends the classic Join board with an **AI-powered email-to-ticket pipeline**: external stakeholders submit feature requests and bug reports via email, which are automatically parsed by Google Gemini AI and converted into triage tickets — complete with status notifications back to the requester.
@@ -27,6 +33,7 @@
 
 ## Table of Contents
 
+- [Disclaimer](#disclaimer)
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Architecture](#architecture)
@@ -36,6 +43,7 @@
 - [Production Build & Deployment](#production-build--deployment)
 - [n8n Workflow Setup](#n8n-workflow-setup)
 - [Troubleshooting](#troubleshooting)
+- [Legal](#legal)
 - [License](#license)
 - [Author](#author)
 
@@ -399,9 +407,16 @@ Webhook (Angular app) ──> External Creator Check ──> Status Email to Sta
 
 ---
 
+## Legal
+
+- [Privacy Policy](src/app/features/legal/privacy-policy/) — GDPR-compliant privacy policy
+- [Legal Notice / Impressum](src/app/features/legal/legal-notice/) — German legal notice pursuant to § 5 DDG
+
+---
+
 ## License
 
-This project was developed as part of a student project at [Developer Akademie GmbH](https://developerakademie.com/).
+This project was developed as part of a training program at [Developer Akademie GmbH](https://developerakademie.com/). It is not licensed for commercial use.
 
 The design and brand assets are owned by Developer Akademie GmbH. Unauthorized use, reproduction, modification, or distribution of the design is prohibited.
 
@@ -409,6 +424,8 @@ The design and brand assets are owned by Developer Akademie GmbH. Unauthorized u
 
 ## Author
 
-**Simon Heistermann**
+**Simon Maximilian Heistermann**
 
-[business@heistermann-solutions.de](mailto:business@heistermann-solutions.de)
+- Website: [simon-heistermann.de](https://simon-heistermann.de)
+- Email: [simon@heistermann-solutions.de](mailto:simon@heistermann-solutions.de)
+- LinkedIn: [Simon Heistermann](https://www.linkedin.com/in/simon-heistermann/)

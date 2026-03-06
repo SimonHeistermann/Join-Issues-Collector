@@ -26,94 +26,260 @@
 }
 
 <ng-template #privacyContent>
-  <section class="legal-section">
-    <h2 class="legal-subtitle">Introduction and Overview</h2>
-    <p>We have prepared this privacy policy (version 21.01.2025) to inform you in accordance with the requirements of the
-       <a href="https://eur-lex.europa.eu/legal-content/DE/TXT/HTML/?uri=CELEX:32016R0679" target="_blank" rel="noopener">
-         General Data Protection Regulation (EU) 2016/679
-       </a>
-       and applicable national laws.</p>
-    <p>This document details which personal data (hereinafter referred to as "data") we, as the data controller,
-       and the processors commissioned by us (e.g., service providers) process, how we will process it in the future,
-       and what lawful options you have.</p>
-  </section>
-
-  <section class="legal-section">
-    <h2 class="legal-subtitle">Area of Application</h2>
-    <p>This privacy policy applies to all personal data processed in our company and by commissioned processors. This includes:</p>
-    <ul class="legal-list">
-      <li>All online presences (websites, online shops) operated by us</li>
-      <li>Social media appearances and email communication</li>
-      <li>Mobile apps for smartphones and other devices</li>
-    </ul>
-    <p>If we engage with you outside of these channels, we will inform you separately if necessary.</p>
-  </section>
-
-  <section class="legal-section">
-    <h2 class="legal-subtitle">Legal Bases</h2>
-    <p>We process your data only when at least one of the following conditions applies:</p>
-    <ol class="legal-list">
-      <li><strong>Consent</strong> (Article 6(1)(a) GDPR): You have given your consent for data processing for a specific purpose.</li>
-      <li><strong>Contract</strong> (Article 6(1)(b) GDPR): We process your data to fulfill a contract or pre-contractual obligations.</li>
-      <li><strong>Legal Obligation</strong> (Article 6(1)(c) GDPR): We process your data when required by law.</li>
-      <li><strong>Legitimate Interests</strong> (Article 6(1)(f) GDPR): If our legitimate interests do not outweigh your fundamental rights, we may process your data.</li>
+  <section class="legal-section legal-toc">
+    <h2 class="legal-subtitle">Contents</h2>
+    <ol class="legal-list toc-list">
+      <li><a href="javascript:void(0)" (click)="scrollTo('controller')">Controller</a></li>
+      <li><a href="javascript:void(0)" (click)="scrollTo('dpo')">Data Protection Officer</a></li>
+      <li><a href="javascript:void(0)" (click)="scrollTo('data-collect')">Data We Collect</a></li>
+      <li><a href="javascript:void(0)" (click)="scrollTo('purposes')">Purposes and Legal Basis</a></li>
+      <li><a href="javascript:void(0)" (click)="scrollTo('processors')">Third-Party Processors</a></li>
+      <li><a href="javascript:void(0)" (click)="scrollTo('transfers')">International Data Transfers</a></li>
+      <li><a href="javascript:void(0)" (click)="scrollTo('cookies')">Cookies and Similar Technologies</a></li>
+      <li><a href="javascript:void(0)" (click)="scrollTo('retention')">Retention Periods</a></li>
+      <li><a href="javascript:void(0)" (click)="scrollTo('rights')">Your Rights</a></li>
+      <li><a href="javascript:void(0)" (click)="scrollTo('supervisory')">Supervisory Authority</a></li>
+      <li><a href="javascript:void(0)" (click)="scrollTo('automated')">Automated Decision-Making</a></li>
+      <li><a href="javascript:void(0)" (click)="scrollTo('obligation')">Obligation to Provide Data</a></li>
+      <li><a href="javascript:void(0)" (click)="scrollTo('training')">Training Project Notice</a></li>
+      <li><a href="javascript:void(0)" (click)="scrollTo('changes')">Changes to This Policy</a></li>
+      <li><a href="javascript:void(0)" (click)="scrollTo('severability')">Severability</a></li>
     </ol>
-    <p>Additionally, national laws such as the Datenschutzgesetz (DSG) in Austria and the Bundesdatenschutzgesetz (BDSG) in Germany apply.</p>
   </section>
 
-  <section class="legal-section">
-    <h2 class="legal-subtitle">Contact Details of the Responsible Party</h2>
-    <p><strong>Responsible Party:</strong> Simon Heistermann<br>
-       46325 Borken<br>
-       Email: <a href="mailto:business@heistermann-solutions.de">business&#64;heistermann-solutions.de</a></p>
+  <section class="legal-section" id="controller">
+    <h2 class="legal-subtitle">1. Controller</h2>
+    <p>The controller responsible for data processing on this website within the meaning of the General Data Protection Regulation (GDPR) is:</p>
+    <p><strong>Simon Maximilian Heistermann</strong><br>
+       Mutter-Teresa-Weg 6, 46325 Borken, Germany<br>
+       Email: <a href="mailto:simon@heistermann-solutions.de">simon&#64;heistermann-solutions.de</a></p>
   </section>
 
-  <section class="legal-section">
-    <h2 class="legal-subtitle">Storage Duration</h2>
-    <p>Personal data is only stored as long as necessary to provide our services and products.
-       If you request deletion or revoke consent, we delete data promptly,
-       provided no legal obligation requires its retention.</p>
+  <section class="legal-section" id="dpo">
+    <h2 class="legal-subtitle">2. Data Protection Officer</h2>
+    <p>We are not legally required to appoint a data protection officer pursuant to § 38 of the German Federal Data Protection Act (BDSG). For any data protection inquiries, please contact us directly at <a href="mailto:simon@heistermann-solutions.de">simon&#64;heistermann-solutions.de</a>.</p>
   </section>
 
-  <section class="legal-section">
-    <h2 class="legal-subtitle">Data Processing and Third Parties</h2>
-    <p>We work with third-party service providers for hosting, analytics, and customer management.
-       These providers process data on our behalf and comply with GDPR requirements.</p>
-    <p>If data is transferred outside the EU, we ensure appropriate safeguards such as Standard Contractual Clauses (SCCs).</p>
-  </section>
+  <section class="legal-section" id="data-collect">
+    <h2 class="legal-subtitle">3. Data We Collect</h2>
+    <p>We process personal data that you provide to us or that is automatically collected when you use this application.</p>
 
-  <section class="legal-section">
-    <h2 class="legal-subtitle">Cookies & Tracking</h2>
-    <p>We use cookies and tracking technologies to improve our services.
-       You can adjust your cookie preferences in your browser settings.</p>
-  </section>
-
-  <section class="legal-section">
-    <h2 class="legal-subtitle">Rights under the GDPR</h2>
+    <h3 class="legal-subheading">3.1 User Registration</h3>
+    <p>When you register for an account, we collect the following information:</p>
     <ul class="legal-list">
-      <li>Right to information (Art. 15 GDPR)</li>
-      <li>Right to rectification (Art. 16 GDPR)</li>
-      <li>Right to erasure (Art. 17 GDPR)</li>
-      <li>Right to restriction of processing (Art. 18 GDPR)</li>
-      <li>Right to data portability (Art. 20 GDPR)</li>
-      <li>Right to object (Art. 21 GDPR)</li>
-      <li>Right to lodge a complaint (Art. 77 GDPR)</li>
+      <li>Full name and email address</li>
+      <li>Password (for authentication)</li>
     </ul>
-    <p>If you believe your data processing violates GDPR, you can file a complaint with the Datenschutzbehörde in Austria
-       (<a href="https://www.dsb.gv.at" target="_blank">dsb.gv.at</a>) or the relevant data protection authority in Germany.</p>
+
+    <h3 class="legal-subheading">3.2 Stakeholder Request Form</h3>
+    <p>When you submit a request as an external stakeholder, we collect:</p>
+    <ul class="legal-list">
+      <li>Your name and email address</li>
+      <li>Request title, description, priority, and category</li>
+      <li>Optional: due date and subtasks</li>
+      <li>Privacy policy consent confirmation with timestamp</li>
+    </ul>
+
+    <h3 class="legal-subheading">3.3 Task and Contact Data</h3>
+    <p>When using the application as a team member, the following data may be created and stored:</p>
+    <ul class="legal-list">
+      <li>Task details (title, description, status, priority, category, subtasks, due date)</li>
+      <li>Contact information (name, email, phone number)</li>
+      <li>Task assignment records linking contacts to tasks</li>
+    </ul>
+
+    <h3 class="legal-subheading">3.4 Rate Limiting Data</h3>
+    <p>To prevent abuse, we generate a browser fingerprint using a SHA-256 hash derived from your user agent, screen dimensions, and timezone. This hash is stored in our database to track daily request counts. The raw data used to create the hash is not stored.</p>
+
+    <h3 class="legal-subheading">3.5 Technical Data</h3>
+    <p>When you visit this website, the following data is automatically collected by our hosting provider:</p>
+    <ul class="legal-list">
+      <li>IP address</li>
+      <li>Browser type and version</li>
+      <li>Operating system</li>
+      <li>Date, time, and duration of access</li>
+      <li>Pages visited</li>
+    </ul>
   </section>
 
-  <section class="legal-section">
-    <h2 class="legal-subtitle">Supervisory Authority</h2>
-    <p><strong>Data Protection Authority:</strong><br>
-       Nordrhein-Westfalen Datenschutzbehörde<br>
-       Address: Kavalleriestraße 2-4, 40213 Düsseldorf<br>
-       Email: <a href="mailto:poststelle@ldi.nrw.de">poststelle&#64;ldi.nrw.de</a><br>
-       Website: <a href="https://www.ldi.nrw.de/" target="_blank">www.ldi.nrw.de</a></p>
+  <section class="legal-section" id="purposes">
+    <h2 class="legal-subtitle">4. Purposes and Legal Basis</h2>
+    <p>We process your personal data for the following purposes and on the following legal bases:</p>
+    <div class="legal-table-wrapper">
+      <table class="legal-table">
+        <thead>
+          <tr>
+            <th>Purpose</th>
+            <th>Legal Basis</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>User registration and authentication</td>
+            <td>Art. 6(1)(b) GDPR — contractual/pre-contractual measures</td>
+          </tr>
+          <tr>
+            <td>Stakeholder request processing</td>
+            <td>Art. 6(1)(a) GDPR — consent (privacy checkbox)</td>
+          </tr>
+          <tr>
+            <td>Task and contact management</td>
+            <td>Art. 6(1)(b) GDPR — necessary for service provision</td>
+          </tr>
+          <tr>
+            <td>Rate limiting and abuse prevention</td>
+            <td>Art. 6(1)(f) GDPR — legitimate interest in service security</td>
+          </tr>
+          <tr>
+            <td>Email notifications (status changes)</td>
+            <td>Art. 6(1)(f) GDPR — legitimate interest in effective communication</td>
+          </tr>
+          <tr>
+            <td>Website hosting and security</td>
+            <td>Art. 6(1)(f) GDPR — legitimate interest in operating a secure website</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </section>
 
-  <section class="legal-section">
-    <h2 class="legal-subtitle">Copyright & Source</h2>
-    <p>All texts are copyright protected. Source: Privacy Policy Generator by AdSimple.</p>
+  <section class="legal-section" id="processors">
+    <h2 class="legal-subtitle">5. Third-Party Processors</h2>
+    <p>We use the following third-party service providers to operate this application. Each processor has entered into a Data Processing Agreement (DPA) with us in accordance with Art. 28 GDPR.</p>
+
+    <h3 class="legal-subheading">Google Firebase (Realtime Database)</h3>
+    <p><strong>Google Ireland Limited</strong>, Gordon House, Barrow Street, Dublin 4, Ireland<br>
+       Purpose: Database hosting for user accounts, tasks, contacts, and rate limit data.<br>
+       Data processed: All user-submitted data (registration, tasks, contacts, request forms, rate limit hashes).</p>
+
+    <h3 class="legal-subheading">n8n (Self-hosted on Render)</h3>
+    <p><strong>Render Services, Inc.</strong>, San Francisco, California, USA<br>
+       Purpose: Workflow automation — email-to-ticket processing and status change notifications.<br>
+       Data processed: Stakeholder request data (name, email, task details), notification metadata.</p>
+
+    <h3 class="legal-subheading">Google Gemini API</h3>
+    <p><strong>Google Ireland Limited</strong>, Gordon House, Barrow Street, Dublin 4, Ireland<br>
+       Purpose: AI-powered parsing of email content into structured task data.<br>
+       Data processed: Email content submitted via the stakeholder request pipeline.</p>
+
+    <h3 class="legal-subheading">Web Hosting Provider</h3>
+    <p>Purpose: Website hosting and content delivery.<br>
+       Data processed: Technical access data (IP address, request logs).</p>
   </section>
+
+  <section class="legal-section" id="transfers">
+    <h2 class="legal-subtitle">6. International Data Transfers</h2>
+    <p>Some of our third-party processors are based in the United States (Render). Data transfers to the US are conducted on the following legal bases:</p>
+    <ul class="legal-list">
+      <li><strong>EU-US Data Privacy Framework (DPF):</strong> The European Commission has adopted an adequacy decision for the EU-US Data Privacy Framework (Commission Implementing Decision of 10 July 2023). Our processors are certified under the DPF, which ensures an adequate level of data protection.</li>
+      <li><strong>Standard Contractual Clauses (SCCs):</strong> As an additional safeguard, we rely on Standard Contractual Clauses pursuant to Art. 46(2)(c) GDPR with our processors.</li>
+    </ul>
+    <p>Google Firebase and Gemini API data is processed within the EU (europe-west1 region). Google Ireland Limited acts as the data controller for EU operations.</p>
+  </section>
+
+  <section class="legal-section" id="cookies">
+    <h2 class="legal-subtitle">7. Cookies and Similar Technologies</h2>
+    <p>This website does <strong>not</strong> use cookies. No cookie consent banner is required or displayed.</p>
+    <p>We use your browser's localStorage to store the following data locally on your device:</p>
+    <ul class="legal-list">
+      <li>Current user session data (name, email, initials)</li>
+      <li>Last visited page for navigation continuity</li>
+      <li>Welcome animation display state</li>
+    </ul>
+    <p>This data never leaves your browser and is not transmitted to our servers. You can clear it at any time through your browser settings.</p>
+  </section>
+
+  <section class="legal-section" id="retention">
+    <h2 class="legal-subtitle">8. Retention Periods</h2>
+    <p>We retain your personal data only as long as necessary for the purposes for which it was collected:</p>
+    <div class="legal-table-wrapper">
+      <table class="legal-table">
+        <thead>
+          <tr>
+            <th>Data Category</th>
+            <th>Retention Period</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>User accounts</td>
+            <td>Until account deletion request</td>
+          </tr>
+          <tr>
+            <td>Tasks and contacts</td>
+            <td>Until deletion by user or upon request</td>
+          </tr>
+          <tr>
+            <td>Stakeholder requests</td>
+            <td>12 months from submission, or upon deletion request</td>
+          </tr>
+          <tr>
+            <td>Rate limit data</td>
+            <td>24 hours (daily reset)</td>
+          </tr>
+          <tr>
+            <td>Server/access logs</td>
+            <td>Per hosting provider policy (typically 30 days)</td>
+          </tr>
+          <tr>
+            <td>localStorage data</td>
+            <td>Until you clear your browser data</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="legal-section" id="rights">
+    <h2 class="legal-subtitle">9. Your Rights</h2>
+    <p>Under the GDPR, you have the following rights regarding your personal data:</p>
+    <ul class="legal-list">
+      <li><strong>Right of access</strong> (Art. 15 GDPR) — You may request confirmation of whether we process your personal data and, if so, obtain a copy of that data.</li>
+      <li><strong>Right to rectification</strong> (Art. 16 GDPR) — You may request correction of inaccurate or incomplete data.</li>
+      <li><strong>Right to erasure</strong> (Art. 17 GDPR) — You may request deletion of your data, subject to legal retention obligations.</li>
+      <li><strong>Right to restriction</strong> (Art. 18 GDPR) — You may request restriction of processing in certain circumstances.</li>
+      <li><strong>Right to data portability</strong> (Art. 20 GDPR) — You may request your data in a structured, commonly used, machine-readable format.</li>
+      <li><strong>Right to object</strong> (Art. 21 GDPR) — You may object to processing based on legitimate interests at any time, for reasons related to your particular situation.</li>
+      <li><strong>Right to withdraw consent</strong> (Art. 7(3) GDPR) — Where processing is based on your consent, you may withdraw consent at any time without affecting the lawfulness of processing carried out before withdrawal.</li>
+    </ul>
+    <p>To exercise any of these rights, please contact us at <a href="mailto:simon@heistermann-solutions.de">simon&#64;heistermann-solutions.de</a>. We will respond within one month of receiving your request.</p>
+  </section>
+
+  <section class="legal-section" id="supervisory">
+    <h2 class="legal-subtitle">10. Supervisory Authority</h2>
+    <p>You have the right to lodge a complaint with a data protection supervisory authority (Art. 77 GDPR). The competent supervisory authority for us is:</p>
+    <p><strong>Landesbeauftragte für Datenschutz und Informationsfreiheit Nordrhein-Westfalen (LDI NRW)</strong><br>
+       Postfach 20 04 44<br>
+       40102 Düsseldorf, Germany<br>
+       Website: <a href="https://www.ldi.nrw.de/" target="_blank" rel="noopener">www.ldi.nrw.de</a></p>
+  </section>
+
+  <section class="legal-section" id="automated">
+    <h2 class="legal-subtitle">11. Automated Decision-Making</h2>
+    <p>This application uses AI (Google Gemini) to parse email content into structured task data. This processing assists in creating task entries but does not produce legal or similarly significant effects on individuals. All AI-generated tasks are subject to human review and can be modified or deleted by team members.</p>
+    <p>Apart from this, we do not use fully automated decision-making, including profiling, within the meaning of Art. 22 GDPR.</p>
+  </section>
+
+  <section class="legal-section" id="obligation">
+    <h2 class="legal-subtitle">12. Obligation to Provide Data</h2>
+    <p><strong>Registration:</strong> Providing your name, email address, and password is necessary to create an account. If you do not provide this data, you cannot use the application as a team member.</p>
+    <p><strong>Stakeholder requests:</strong> Providing your name, email, and request details is necessary for us to process your request and send status notifications. If you do not provide this data, we cannot create a task on your behalf.</p>
+  </section>
+
+  <section class="legal-section" id="training">
+    <h2 class="legal-subtitle">13. Training Project Notice</h2>
+    <p>This application is a <strong>training project</strong> built as part of an educational program at <a href="https://developerakademie.com/" target="_blank" rel="noopener">Developer Akademie</a>. It is not a commercial product and is not intended for production use with real personal data. Please do not enter sensitive personal information.</p>
+  </section>
+
+  <section class="legal-section" id="changes">
+    <h2 class="legal-subtitle">14. Changes to This Policy</h2>
+    <p>We may update this privacy policy from time to time to reflect changes in our practices or for legal, regulatory, or operational reasons. Minor corrections or clarifications may take effect immediately. The "Last updated" date below reflects the most recent revision.</p>
+  </section>
+
+  <section class="legal-section" id="severability">
+    <h2 class="legal-subtitle">15. Severability</h2>
+    <p>Should any provision of this privacy policy be held invalid or unenforceable, the remaining provisions shall remain in full force and effect. Any invalid provision shall be replaced by a valid provision that comes closest to the intent of the original.</p>
+  </section>
+
+  <p class="legal-updated"><strong>Last updated:</strong> March 2026</p>
 </ng-template>

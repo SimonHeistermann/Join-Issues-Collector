@@ -138,6 +138,52 @@
   }
 }
 
+// Subheadings within sections
+.legal-subheading {
+  font-size: 17px;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin: 16px 0 8px;
+}
+
+// Disclaimer highlight
+.disclaimer-section {
+  border-left: 4px solid $color-primary-light;
+}
+
+// Last updated note
+.legal-updated {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  text-align: right;
+  margin-top: 8px;
+}
+
+// List styles (matching privacy policy)
+.legal-list {
+  padding-left: 24px;
+  margin-top: 10px;
+  list-style: none;
+
+  li {
+    font-size: $font-size-base;
+    line-height: 1.6;
+    color: $color-text-primary;
+    margin-bottom: 10px;
+    padding-left: 8px;
+    position: relative;
+
+    &::before {
+      content: "\2714";
+      color: $color-primary-light;
+      font-size: 14px;
+      position: absolute;
+      left: -20px;
+      top: 4px;
+    }
+  }
+}
+
 // Tablet / intermediate
 @media (max-width: $breakpoint-desktop) {
   .page-title {

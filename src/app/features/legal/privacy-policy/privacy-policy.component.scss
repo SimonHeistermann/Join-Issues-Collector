@@ -156,6 +156,57 @@
   }
 }
 
+// Table of contents
+.toc-list {
+  li::before { content: none; }
+  li { padding-left: 0; }
+
+  a {
+    color: $color-primary-light;
+    text-decoration: none;
+    &:hover { text-decoration: underline; }
+  }
+}
+
+// Subheadings within sections
+.legal-subheading {
+  font-size: 17px;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin: 16px 0 8px;
+}
+
+// Tables
+.legal-table-wrapper {
+  overflow-x: auto;
+  margin: 12px 0;
+}
+
+.legal-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: $font-size-sm;
+
+  th, td {
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  th {
+    font-weight: $font-weight-semibold;
+    background: rgba(0, 0, 0, 0.03);
+  }
+}
+
+// Last updated note
+.legal-updated {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  text-align: right;
+  margin-top: 8px;
+}
+
 // Tablet / intermediate
 @media (max-width: $breakpoint-desktop) {
   .page-title {
