@@ -34,6 +34,7 @@
       <li><a href="javascript:void(0)" (click)="scrollTo('data-collect')">Data We Collect</a></li>
       <li><a href="javascript:void(0)" (click)="scrollTo('purposes')">Purposes and Legal Basis</a></li>
       <li><a href="javascript:void(0)" (click)="scrollTo('processors')">Third-Party Processors</a></li>
+      <li><a href="javascript:void(0)" (click)="scrollTo('gemini')">Use of Google Gemini API</a></li>
       <li><a href="javascript:void(0)" (click)="scrollTo('transfers')">International Data Transfers</a></li>
       <li><a href="javascript:void(0)" (click)="scrollTo('cookies')">Cookies and Similar Technologies</a></li>
       <li><a href="javascript:void(0)" (click)="scrollTo('retention')">Retention Periods</a></li>
@@ -157,28 +158,32 @@
        Purpose: Workflow automation — email-to-ticket processing and status change notifications.<br>
        Data processed: Stakeholder request data (name, email, task details), notification metadata.</p>
 
-    <h3 class="legal-subheading">Google Gemini API</h3>
-    <p><strong>Google Ireland Limited</strong>, Gordon House, Barrow Street, Dublin 4, Ireland<br>
-       Purpose: AI-powered parsing of email content into structured task data.<br>
-       Data processed: Email content submitted via the stakeholder request pipeline.</p>
-
     <h3 class="legal-subheading">Web Hosting Provider</h3>
     <p>Purpose: Website hosting and content delivery.<br>
        Data processed: Technical access data (IP address, request logs).</p>
   </section>
 
+  <section class="legal-section" id="gemini">
+    <h2 class="legal-subtitle">6. Use of Google Gemini API</h2>
+    <p>This project uses the <strong>Google Gemini API</strong> (Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Ireland) for automated creation of tasks from stakeholder requests.</p>
+    <p>When using the ticket system, the contents of your request are transmitted to Google's servers via an n8n workflow. Technical data (in particular your IP address) may also be transmitted to Google in the process.</p>
+    <p><strong>Important distinction:</strong> Google Gemini is used in the free tier. In this mode, Google acts as an <strong>independent controller</strong> and not as a data processor within the meaning of Art. 28 GDPR. Google may use the transmitted data to improve its products and AI models. For more information, please refer to the <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener">Gemini API Terms of Service</a> and <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google Privacy Policy</a>.</p>
+    <p>Data transfers to the United States are conducted on the basis of the adequacy decision of the European Commission for the EU-US Data Privacy Framework (Art. 45 GDPR).</p>
+    <p>We recommend not entering any sensitive or personal data into the application. This is a training project that is not intended for production use.</p>
+  </section>
+
   <section class="legal-section" id="transfers">
-    <h2 class="legal-subtitle">6. International Data Transfers</h2>
+    <h2 class="legal-subtitle">7. International Data Transfers</h2>
     <p>Some of our third-party processors are based in the United States (Render). Data transfers to the US are conducted on the following legal bases:</p>
     <ul class="legal-list">
       <li><strong>EU-US Data Privacy Framework (DPF):</strong> The European Commission has adopted an adequacy decision for the EU-US Data Privacy Framework (Commission Implementing Decision of 10 July 2023). Our processors are certified under the DPF, which ensures an adequate level of data protection.</li>
       <li><strong>Standard Contractual Clauses (SCCs):</strong> As an additional safeguard, we rely on Standard Contractual Clauses pursuant to Art. 46(2)(c) GDPR with our processors.</li>
     </ul>
-    <p>Google Firebase and Gemini API data is processed within the EU (europe-west1 region). Google Ireland Limited acts as the data controller for EU operations.</p>
+    <p>Google Firebase data is processed within the EU (europe-west1 region). For details on data transfers related to the Google Gemini API, please refer to Section 6.</p>
   </section>
 
   <section class="legal-section" id="cookies">
-    <h2 class="legal-subtitle">7. Cookies and Similar Technologies</h2>
+    <h2 class="legal-subtitle">8. Cookies and Similar Technologies</h2>
     <p>This website does <strong>not</strong> use cookies. No cookie consent banner is required or displayed.</p>
     <p>We use your browser's localStorage to store the following data locally on your device:</p>
     <ul class="legal-list">
@@ -190,7 +195,7 @@
   </section>
 
   <section class="legal-section" id="retention">
-    <h2 class="legal-subtitle">8. Retention Periods</h2>
+    <h2 class="legal-subtitle">9. Retention Periods</h2>
     <p>We retain your personal data only as long as necessary for the purposes for which it was collected:</p>
     <div class="legal-table-wrapper">
       <table class="legal-table">
@@ -231,7 +236,7 @@
   </section>
 
   <section class="legal-section" id="rights">
-    <h2 class="legal-subtitle">9. Your Rights</h2>
+    <h2 class="legal-subtitle">10. Your Rights</h2>
     <p>Under the GDPR, you have the following rights regarding your personal data:</p>
     <ul class="legal-list">
       <li><strong>Right of access</strong> (Art. 15 GDPR) — You may request confirmation of whether we process your personal data and, if so, obtain a copy of that data.</li>
@@ -246,7 +251,7 @@
   </section>
 
   <section class="legal-section" id="supervisory">
-    <h2 class="legal-subtitle">10. Supervisory Authority</h2>
+    <h2 class="legal-subtitle">11. Supervisory Authority</h2>
     <p>You have the right to lodge a complaint with a data protection supervisory authority (Art. 77 GDPR). The competent supervisory authority for us is:</p>
     <p><strong>Landesbeauftragte für Datenschutz und Informationsfreiheit Nordrhein-Westfalen (LDI NRW)</strong><br>
        Postfach 20 04 44<br>
@@ -255,29 +260,29 @@
   </section>
 
   <section class="legal-section" id="automated">
-    <h2 class="legal-subtitle">11. Automated Decision-Making</h2>
-    <p>This application uses AI (Google Gemini) to parse email content into structured task data. This processing assists in creating task entries but does not produce legal or similarly significant effects on individuals. All AI-generated tasks are subject to human review and can be modified or deleted by team members.</p>
+    <h2 class="legal-subtitle">12. Automated Decision-Making</h2>
+    <p>This application uses AI (Google Gemini) to parse email content into structured task data (see Section 6 for details). This processing assists in creating task entries but does not produce legal or similarly significant effects on individuals. All AI-generated tasks are subject to human review and can be modified or deleted by team members.</p>
     <p>Apart from this, we do not use fully automated decision-making, including profiling, within the meaning of Art. 22 GDPR.</p>
   </section>
 
   <section class="legal-section" id="obligation">
-    <h2 class="legal-subtitle">12. Obligation to Provide Data</h2>
+    <h2 class="legal-subtitle">13. Obligation to Provide Data</h2>
     <p><strong>Registration:</strong> Providing your name, email address, and password is necessary to create an account. If you do not provide this data, you cannot use the application as a team member.</p>
     <p><strong>Stakeholder requests:</strong> Providing your name, email, and request details is necessary for us to process your request and send status notifications. If you do not provide this data, we cannot create a task on your behalf.</p>
   </section>
 
   <section class="legal-section" id="training">
-    <h2 class="legal-subtitle">13. Training Project Notice</h2>
+    <h2 class="legal-subtitle">14. Training Project Notice</h2>
     <p>This application is a <strong>training project</strong> built as part of an educational program at <a href="https://developerakademie.com/" target="_blank" rel="noopener">Developer Akademie</a>. It is not a commercial product and is not intended for production use with real personal data. Please do not enter sensitive personal information.</p>
   </section>
 
   <section class="legal-section" id="changes">
-    <h2 class="legal-subtitle">14. Changes to This Policy</h2>
+    <h2 class="legal-subtitle">15. Changes to This Policy</h2>
     <p>We may update this privacy policy from time to time to reflect changes in our practices or for legal, regulatory, or operational reasons. Minor corrections or clarifications may take effect immediately. The "Last updated" date below reflects the most recent revision.</p>
   </section>
 
   <section class="legal-section" id="severability">
-    <h2 class="legal-subtitle">15. Severability</h2>
+    <h2 class="legal-subtitle">16. Severability</h2>
     <p>Should any provision of this privacy policy be held invalid or unenforceable, the remaining provisions shall remain in full force and effect. Any invalid provision shall be replaced by a valid provision that comes closest to the intent of the original.</p>
   </section>
 
